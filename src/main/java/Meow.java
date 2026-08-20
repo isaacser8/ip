@@ -22,7 +22,7 @@ public class Meow {
         System.out.println(line);
 
         Scanner sc = new Scanner(System.in);
-        String[] tasks = new String[100];
+        Task[] tasks = new Task[100];
         int taskCount = 0;
 
         while (true) {
@@ -33,11 +33,26 @@ public class Meow {
             } else if (input.equals("list")) {
                 System.out.println(line);
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println(i + 1 + ". " + tasks[i]);
+                    System.out.println(i + 1 + ". " + tasks[i].toString());
                 }
                 System.out.println(line);
+            } else if (input.startsWith("mark ")) {
+                String[] parts = input.split(" ");
+                int taskNumber = Integer.parseInt(parts[1]);
+                int taskIndex = taskNumber - 1;
+                tasks[taskIndex].markAsDone();
+                System.out.println("Meow! I've mark this task as done");
+                System.out.println(tasks[taskIndex].toString());
+            } else if (input.startsWith("unmark ")) {
+                String[] parts = input.split(" ");
+                int taskNumber = Integer.parseInt(parts[1]);
+                int taskIndex = taskNumber - 1;
+                tasks[taskIndex].markAsNotDone();
+                System.out.println("Meow! I've mark this task as not done yet");
+                System.out.println(tasks[taskIndex].toString());
             } else {
-                tasks[taskCount] = input;
+                Task task = new Task(input);
+                tasks[taskCount] = task;
                 taskCount++;
                 System.out.println(line);
                 System.out.println("added: " + input);
