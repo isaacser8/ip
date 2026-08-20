@@ -1,6 +1,6 @@
 ---
 name: test-ui
-description: Record and run fail-fast tests for interactive command-line programs. Use when the user supplies, requests, updates, or runs lists of console commands and expected outputs; when creating or maintaining test/ui-test-plan.md; or when verifying a text-based UI and showing its complete console session.
+description: Record and run fail-fast tests for interactive command-line programs. Use after every code update in this project; when the user supplies, requests, updates, or runs lists of console commands and expected outputs; when creating or maintaining test/ui-test-plan.md; or when verifying a text-based UI and showing its complete console session.
 ---
 
 # Test UI
@@ -9,8 +9,8 @@ Test an interactive console program one command at a time against the expected o
 
 ## Workflow
 
-1. Inspect the project instructions and determine the command that starts the program. Build it first when necessary. For this project, use Java 25 as required by `AGENTS.md`.
-2. Create or update `test/ui-test-plan.md` from the user's test cases. Preserve useful existing cases unless the user asks to replace them.
+1. After every code update, invoke this skill before declaring the work complete. Inspect the project instructions and determine the command that starts the program. Build it first when necessary. For this project, use Java 25 as required by `AGENTS.md`.
+2. Review `test/ui-test-plan.md`. Update it when the code change affects console commands, output, state transitions, error handling, or needs additional regression coverage; otherwise leave it unchanged. When the user supplies cases, create or update the plan from them and preserve useful existing cases unless the user asks to replace them.
 3. Give every test case a unique ID, a concise aim, one or more input commands, and the expected output caused by each command. Record expected startup output separately.
 4. Keep the explanatory Markdown and the machine-readable JSON block consistent. The runner reads the first `json` fenced block after the `## Machine-readable plan` heading.
 5. Run `python3 .agents/skills/test-ui/scripts/run_ui_tests.py test/ui-test-plan.md`.

@@ -28,6 +28,14 @@ Unless the user says otherwise, assume that you are assisting a student working 
 
 Ensure that Java 25 is used when running the application or build tasks. On macOS, use `sdk use java 25.0.3.fx-zulu` to switch to Java 25 if needed.
 
+## UI regression testing
+
+After every code update:
+
+1. Review `test/ui-test-plan.md` and update it when the change affects console commands, output, state transitions, error handling, or requires additional regression coverage. Keep it unchanged when the existing plan remains accurate and sufficient.
+2. Invoke the project-specific `$test-ui` skill and run all test cases recorded in `test/ui-test-plan.md`. Other tests do not replace this required UI test run.
+3. Stop on the first failed UI test. Report the actual and expected output and include the console input/output transcript in the final response.
+
 ## Git
 
 Use lightweight tags unless the user requests an annotated tag.
