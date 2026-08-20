@@ -96,7 +96,6 @@ public class Meow {
                     if (description.isBlank()) {
                         throw new MeowException("Meow! A deadline needs a description.");
                     }
-
                     if (by.isBlank()) {
                         throw new MeowException("Meow! A deadline needs a /by date.");
                     }
@@ -104,16 +103,36 @@ public class Meow {
                     Task task = new Deadline(description, by);
                     totalTaskCount = addTask(line, tasks, totalTaskCount, task);
 
+                } else if (input.equals("event")) {
+                        throw new MeowException("Meow! An event needs a description, a /from date and a /to date.");
                 } else if (input.startsWith("event ")) {
 
-                    String content = input.substring(6);
+                    String content = input.substring(6).trim();
+                    if (content.isBlank()) {
+                        throw new MeowException("Meow! An event needs a description, a /from date and a /to date.");
+                    }
 
-                    String[] fromParts = content.split(" /from ", 2);
-                    String description = fromParts[0];
+                    int fromIndex = content.indexOf("/from");
+                    int toIndex = content.indexOf("/to");
+                    if (fromIndex == -1) {
+                        throw new MeowException("Meow! An event needs a /from date.");
+                    }
+                    if (toIndex == -1) {
+                        throw new MeowException("Meow! An event needs a /to date.");
+                    }
 
-                    String[] toParts = fromParts[1].split(" /to ", 2);
-                    String from = toParts[0];
-                    String to = toParts[1];
+                    String description = content.substring(0, fromIndex).trim();
+                    String from = content.substring(fromIndex + 5, toIndex).trim();
+                    String to = content.substring(toIndex + 3).trim();
+                    if (description.isBlank()) {
+                        throw new MeowException("Meow! An event needs a description.");
+                    }
+                    if (from.isBlank()) {
+                        throw new MeowException("Meow! An event needs a /from date.");
+                    }
+                    if (to.isBlank()) {
+                        throw new MeowException("Meow! An event needs a /to date.");
+                    }
 
                     Task task = new Event(description, from, to);
                     totalTaskCount = addTask(line, tasks, totalTaskCount, task);
@@ -128,7 +147,6 @@ public class Meow {
         System.out.println(line);
         System.out.println(farewell);
         System.out.println(line);
-
 
     }
 
