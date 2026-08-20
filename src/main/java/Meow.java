@@ -70,7 +70,6 @@ public class Meow {
                 } else if (input.startsWith("todo ")) {
 
                     String content = input.substring(5);
-
                     if (content.isBlank()) {
                         throw new MeowException("Meow! A todo needs a description.");
                     }
@@ -78,13 +77,29 @@ public class Meow {
                     Task task = new Todo(content);
                     totalTaskCount = addTask(line, tasks, totalTaskCount, task);
 
+                } else if (input.equals("deadline")) {
+                    throw new MeowException("Meow! A deadline needs a description and a /by date.");
                 } else if (input.startsWith("deadline ")) {
 
                     String content = input.substring(9);
-                    String[] parts = content.split(" /by ", 2);
+                    if (content.isBlank()) {
+                        throw new MeowException("Meow! A deadline needs a description and a /by date.");
+                    }
 
-                    String description = parts[0];
-                    String by = parts[1];
+                    int byIndex = content.indexOf("/by");
+                    if (byIndex == -1) {
+                        throw new MeowException("Meow! A deadline needs a /by date.");
+                    }
+
+                    String description = content.substring(0, byIndex).trim();
+                    String by = content.substring(byIndex + 3).trim();
+                    if (description.isBlank()) {
+                        throw new MeowException("Meow! A deadline needs a description.");
+                    }
+
+                    if (by.isBlank()) {
+                        throw new MeowException("Meow! A deadline needs a /by date.");
+                    }
 
                     Task task = new Deadline(description, by);
                     totalTaskCount = addTask(line, tasks, totalTaskCount, task);
