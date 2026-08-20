@@ -2,24 +2,8 @@ import java.util.Scanner;
 
 public class Meow {
     public static void main(String[] args) {
-        String banner =
-                  "███   ███ ███████  █████  ██     ██\n"
-                + "████ ████ ██      ██   ██ ██     ██\n"
-                + "██ ███ ██ █████   ██   ██ ██  █  ██\n"
-                + "██     ██ ██      ██   ██ ██ ███ ██\n"
-                + "██     ██ ███████  █████   ███ ███\n";
-
-        String greeting = "Meow! Welcome back. \n"
-                + "Start yapping, I'm all ears!";
-
-        String farewell = "Marvellous yap session. Let's catch up soon meow!";
-
-        String line = "____________________________________________________________";
-
-        System.out.println(line);
-        System.out.println(banner);
-        System.out.println(greeting);
-        System.out.println(line);
+        Ui ui = new Ui();
+        ui.showGreeting();
 
         Scanner sc = new Scanner(System.in);
         Task[] tasks = new Task[100];
@@ -33,13 +17,7 @@ public class Meow {
                     break;
 
                 } else if (input.equals("list")) {
-
-                    System.out.println(line);
-                    System.out.println("Here are the tasks in your list:");
-                    for (int i = 0; i < totalTaskCount; i++) {
-                        System.out.println(i + 1 + ". " + tasks[i]);
-                    }
-                    System.out.println(line);
+                    ui.showTaskList(tasks, totalTaskCount);
                 } else if (input.equals("mark")) {
                     throw new MeowException("Meow! Please specify a task number.");
                 } else if (input.startsWith("mark ")) {
@@ -61,11 +39,7 @@ public class Meow {
 
                     int taskIndex = taskNumber - 1;
                     tasks[taskIndex].markAsDone();
-
-                    System.out.println(line);
-                    System.out.println("Meow! I've marked this task as done:");
-                    System.out.println(tasks[taskIndex]);
-                    System.out.println(line);
+                    ui.showTaskMarked(tasks[taskIndex]);
 
                 } else if (input.equals("unmark")) {
                     throw new MeowException("Meow! Please specify a task number.");
@@ -89,11 +63,7 @@ public class Meow {
 
                     int taskIndex = taskNumber - 1;
                     tasks[taskIndex].markAsNotDone();
-
-                    System.out.println(line);
-                    System.out.println("Meow! I've marked this task as not done yet");
-                    System.out.println(tasks[taskIndex].toString());
-                    System.out.println(line);
+                    ui.showTaskUnmarked(tasks[taskIndex]);
 
                 } else if (input.equals("todo")) {
                     throw new MeowException("Meow! A todo needs a description.");
@@ -105,7 +75,7 @@ public class Meow {
                     }
 
                     Task task = new Todo(content);
-                    totalTaskCount = addTask(line, tasks, totalTaskCount, task);
+                    totalTaskCount = addTask(ui, tasks, totalTaskCount, task);
 
                 } else if (input.equals("deadline")) {
                     throw new MeowException("Meow! A deadline needs a description and a /by date.");
@@ -131,7 +101,7 @@ public class Meow {
                     }
 
                     Task task = new Deadline(description, by);
-                    totalTaskCount = addTask(line, tasks, totalTaskCount, task);
+                    totalTaskCount = addTask(ui, tasks, totalTaskCount, task);
 
                 } else if (input.equals("event")) {
                     throw new MeowException("Meow! An event needs a description, a /from date and a /to date.");
@@ -165,30 +135,21 @@ public class Meow {
                     }
 
                     Task task = new Event(description, from, to);
-                    totalTaskCount = addTask(line, tasks, totalTaskCount, task);
+                    totalTaskCount = addTask(ui, tasks, totalTaskCount, task);
                 } else {
                     throw new MeowException("Meow! I'm sorry, but I don't know what that means.");
                 }
             } catch (MeowException e) {
-                System.out.println(line);
-                System.out.println(e.getMessage());
-                System.out.println(line);
+                ui.showError(e.getMessage());
             }
         }
-        System.out.println(line);
-        System.out.println(farewell);
-        System.out.println(line);
+        ui.showFarewell();
     }
 
-    private static int addTask(String line, Task[] tasks, int taskCount, Task task) {
+    private static int addTask(Ui ui, Task[] tasks, int taskCount, Task task) {
         tasks[taskCount] = task;
         taskCount++;
-
-        System.out.println(line);
-        System.out.println("Got it. I've added this task:");
-        System.out.println(task.toString());
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
-        System.out.println(line);
+        ui.showTaskAdded(task, taskCount);
         return taskCount;
     }
 }
