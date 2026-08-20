@@ -28,71 +28,85 @@ public class Meow {
         while (true) {
             String input = sc.nextLine();
 
-            if (input.equals("bye")) {
-                break;
-            } else if (input.equals("list")) {
+            try {
+                if (input.equals("bye")) {
+                    break;
 
-                System.out.println(line);
-                System.out.println("Here are the tasks in your list:");
-                for (int i = 0; i < totalTaskCount; i++) {
-                    System.out.println(i + 1 + ". " + tasks[i]);
+                } else if (input.equals("list")) {
+
+                    System.out.println(line);
+                    System.out.println("Here are the tasks in your list:");
+                    for (int i = 0; i < totalTaskCount; i++) {
+                        System.out.println(i + 1 + ". " + tasks[i]);
+                    }
+                    System.out.println(line);
+
+                } else if (input.startsWith("mark ")) {
+
+                    String[] parts = input.split(" ");
+                    int taskNumber = Integer.parseInt(parts[1]);
+                    int taskIndex = taskNumber - 1;
+                    tasks[taskIndex].markAsDone();
+
+                    System.out.println(line);
+                    System.out.println("Meow! I've marked this task as done");
+                    System.out.println(tasks[taskIndex].toString());
+                    System.out.println(line);
+
+                } else if (input.startsWith("unmark ")) {
+
+                    String[] parts = input.split(" ");
+                    int taskNumber = Integer.parseInt(parts[1]);
+                    int taskIndex = taskNumber - 1;
+                    tasks[taskIndex].markAsNotDone();
+
+                    System.out.println(line);
+                    System.out.println("Meow! I've marked this task as not done yet");
+                    System.out.println(tasks[taskIndex].toString());
+                    System.out.println(line);
+
+                } else if (input.equals("todo")) {
+                    throw new MeowException("Meow! A todo needs a description.");
+                } else if (input.startsWith("todo ")) {
+
+                    String content = input.substring(5);
+
+                    if (content.isBlank()) {
+                        throw new MeowException("Meow! A todo needs a description.");
+                    }
+
+                    Task task = new Todo(content);
+                    totalTaskCount = addTask(line, tasks, totalTaskCount, task);
+
+                } else if (input.startsWith("deadline ")) {
+
+                    String content = input.substring(9);
+                    String[] parts = content.split(" /by ", 2);
+
+                    String description = parts[0];
+                    String by = parts[1];
+
+                    Task task = new Deadline(description, by);
+                    totalTaskCount = addTask(line, tasks, totalTaskCount, task);
+
+                } else if (input.startsWith("event ")) {
+
+                    String content = input.substring(6);
+
+                    String[] fromParts = content.split(" /from ", 2);
+                    String description = fromParts[0];
+
+                    String[] toParts = fromParts[1].split(" /to ", 2);
+                    String from = toParts[0];
+                    String to = toParts[1];
+
+                    Task task = new Event(description, from, to);
+                    totalTaskCount = addTask(line, tasks, totalTaskCount, task);
                 }
+            } catch (MeowException e) {
                 System.out.println(line);
-
-            } else if (input.startsWith("mark ")) {
-
-                String[] parts = input.split(" ");
-                int taskNumber = Integer.parseInt(parts[1]);
-                int taskIndex = taskNumber - 1;
-                tasks[taskIndex].markAsDone();
-
+                System.out.println(e.getMessage());
                 System.out.println(line);
-                System.out.println("Meow! I've marked this task as done");
-                System.out.println(tasks[taskIndex].toString());
-                System.out.println(line);
-
-            } else if (input.startsWith("unmark ")) {
-
-                String[] parts = input.split(" ");
-                int taskNumber = Integer.parseInt(parts[1]);
-                int taskIndex = taskNumber - 1;
-                tasks[taskIndex].markAsNotDone();
-
-                System.out.println(line);
-                System.out.println("Meow! I've marked this task as not done yet");
-                System.out.println(tasks[taskIndex].toString());
-                System.out.println(line);
-
-            } else if (input.startsWith("todo ")) {
-
-                String content = input.substring(5);
-                Task task = new Todo(content);
-                totalTaskCount = addTask(line, tasks, totalTaskCount, task);
-
-            } else if (input.startsWith("deadline ")) {
-
-                String content = input.substring(9);
-                String[] parts = content.split(" /by ", 2);
-
-                String description = parts[0];
-                String by = parts[1];
-
-                Task task = new Deadline(description, by);
-                totalTaskCount = addTask(line, tasks, totalTaskCount, task);
-
-            } else if (input.startsWith("event ")) {
-
-                String content = input.substring(6);
-
-                String[] fromParts = content.split(" /from ", 2);
-                String description = fromParts[0];
-
-                String[] toParts = fromParts[1].split(" /to ", 2);
-                String from = toParts[0];
-                String to = toParts[1];
-
-                Task task = new Event(description, from, to);
-                totalTaskCount = addTask(line, tasks, totalTaskCount, task);
             }
         }
 
