@@ -40,23 +40,53 @@ public class Meow {
                         System.out.println(i + 1 + ". " + tasks[i]);
                     }
                     System.out.println(line);
-
+                } else if (input.equals("mark")) {
+                    throw new MeowException("Meow! Please specify a task number.");
                 } else if (input.startsWith("mark ")) {
 
                     String[] parts = input.split(" ");
-                    int taskNumber = Integer.parseInt(parts[1]);
+                    int taskNumber;
+
+                    try {
+                        taskNumber = Integer.parseInt(parts[1]);
+                    } catch (NumberFormatException e) {
+                        throw new MeowException("Meow! Task number must be a number.");
+                    }
+                    if (taskNumber <= 0) {
+                        throw new MeowException("Meow! Task number must be positive.");
+                    }
+                    if (taskNumber > totalTaskCount) {
+                        throw new MeowException("Meow! There is no task number " + taskNumber + ".");
+                    }
+
                     int taskIndex = taskNumber - 1;
                     tasks[taskIndex].markAsDone();
 
                     System.out.println(line);
-                    System.out.println("Meow! I've marked this task as done");
-                    System.out.println(tasks[taskIndex].toString());
+                    System.out.println("Meow! I've marked this task as done:");
+                    System.out.println(tasks[taskIndex]);
                     System.out.println(line);
+
+                } else if (input.equals("unmark")) {
+                    throw new MeowException("Meow! Please specify a task number.");
 
                 } else if (input.startsWith("unmark ")) {
 
                     String[] parts = input.split(" ");
-                    int taskNumber = Integer.parseInt(parts[1]);
+                    int taskNumber;
+
+                    try {
+                        taskNumber = Integer.parseInt(parts[1]);
+                    } catch (NumberFormatException e) {
+                        throw new MeowException("Meow! Task number must be a number.");
+                    }
+                    if (taskNumber <= 0) {
+                        throw new MeowException("Meow! Task number must be positive.");
+                    }
+                    if (taskNumber > totalTaskCount) {
+                        throw new MeowException("Meow! There is no task number " + taskNumber + ".");
+                    }
+
                     int taskIndex = taskNumber - 1;
                     tasks[taskIndex].markAsNotDone();
 
@@ -104,7 +134,7 @@ public class Meow {
                     totalTaskCount = addTask(line, tasks, totalTaskCount, task);
 
                 } else if (input.equals("event")) {
-                        throw new MeowException("Meow! An event needs a description, a /from date and a /to date.");
+                    throw new MeowException("Meow! An event needs a description, a /from date and a /to date.");
                 } else if (input.startsWith("event ")) {
 
                     String content = input.substring(6).trim();
@@ -136,6 +166,8 @@ public class Meow {
 
                     Task task = new Event(description, from, to);
                     totalTaskCount = addTask(line, tasks, totalTaskCount, task);
+                } else {
+                    throw new MeowException("Meow! I'm sorry, but I don't know what that means.");
                 }
             } catch (MeowException e) {
                 System.out.println(line);
@@ -143,11 +175,9 @@ public class Meow {
                 System.out.println(line);
             }
         }
-
         System.out.println(line);
         System.out.println(farewell);
         System.out.println(line);
-
     }
 
     private static int addTask(String line, Task[] tasks, int taskCount, Task task) {
