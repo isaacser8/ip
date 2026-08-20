@@ -6,8 +6,7 @@ public class Meow {
         ui.showGreeting();
 
         Scanner sc = new Scanner(System.in);
-        Task[] tasks = new Task[100];
-        int totalTaskCount = 0;
+        TaskList tasks = new TaskList();
 
         while (true) {
             String input = sc.nextLine();
@@ -17,7 +16,7 @@ public class Meow {
                     break;
 
                 } else if (input.equals("list")) {
-                    ui.showTaskList(tasks, totalTaskCount);
+                    ui.showTaskList(tasks);
                 } else if (input.equals("mark")) {
                     throw new MeowException("Meow! Please specify a task number.");
                 } else if (input.startsWith("mark ")) {
@@ -33,13 +32,13 @@ public class Meow {
                     if (taskNumber <= 0) {
                         throw new MeowException("Meow! Task number must be positive.");
                     }
-                    if (taskNumber > totalTaskCount) {
+                    if (taskNumber > tasks.size()) {
                         throw new MeowException("Meow! There is no task number " + taskNumber + ".");
                     }
 
                     int taskIndex = taskNumber - 1;
-                    tasks[taskIndex].markAsDone();
-                    ui.showTaskMarked(tasks[taskIndex]);
+                    tasks.getTask(taskIndex).markAsDone();
+                    ui.showTaskMarked(tasks.getTask(taskIndex));
 
                 } else if (input.equals("unmark")) {
                     throw new MeowException("Meow! Please specify a task number.");
@@ -57,13 +56,13 @@ public class Meow {
                     if (taskNumber <= 0) {
                         throw new MeowException("Meow! Task number must be positive.");
                     }
-                    if (taskNumber > totalTaskCount) {
+                    if (taskNumber > tasks.size()) {
                         throw new MeowException("Meow! There is no task number " + taskNumber + ".");
                     }
 
                     int taskIndex = taskNumber - 1;
-                    tasks[taskIndex].markAsNotDone();
-                    ui.showTaskUnmarked(tasks[taskIndex]);
+                    tasks.getTask(taskIndex).markAsNotDone();
+                    ui.showTaskUnmarked(tasks.getTask(taskIndex));
 
                 } else if (input.equals("todo")) {
                     throw new MeowException("Meow! A todo needs a description.");
@@ -75,7 +74,8 @@ public class Meow {
                     }
 
                     Task task = new Todo(content);
-                    totalTaskCount = addTask(ui, tasks, totalTaskCount, task);
+                    tasks.add(task);
+                    ui.showTaskAdded(task, tasks.size());
 
                 } else if (input.equals("deadline")) {
                     throw new MeowException("Meow! A deadline needs a description and a /by date.");
@@ -101,7 +101,8 @@ public class Meow {
                     }
 
                     Task task = new Deadline(description, by);
-                    totalTaskCount = addTask(ui, tasks, totalTaskCount, task);
+                    tasks.add(task);
+                    ui.showTaskAdded(task, tasks.size());
 
                 } else if (input.equals("event")) {
                     throw new MeowException("Meow! An event needs a description, a /from date and a /to date.");
@@ -135,7 +136,8 @@ public class Meow {
                     }
 
                     Task task = new Event(description, from, to);
-                    totalTaskCount = addTask(ui, tasks, totalTaskCount, task);
+                    tasks.add(task);
+                    ui.showTaskAdded(task, tasks.size());
                 } else {
                     throw new MeowException("Meow! I'm sorry, but I don't know what that means.");
                 }
@@ -144,12 +146,5 @@ public class Meow {
             }
         }
         ui.showFarewell();
-    }
-
-    private static int addTask(Ui ui, Task[] tasks, int taskCount, Task task) {
-        tasks[taskCount] = task;
-        taskCount++;
-        ui.showTaskAdded(task, taskCount);
-        return taskCount;
     }
 }
