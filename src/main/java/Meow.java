@@ -73,6 +73,29 @@ public class Meow {
                     tasks.add(task);
                     ui.showTaskAdded(task, tasks.size());
 
+                } else if (input.equals("delete")) {
+                    throw new MeowException("Meow! Please specify a task number.");
+                } else if (input.startsWith("delete ")) {
+
+                    String[] parts = input.split(" ");
+                    int taskNumber;
+
+                    try {
+                        taskNumber = Integer.parseInt(parts[1]);
+                    } catch (NumberFormatException e) {
+                        throw new MeowException("Meow! Task number must be a number.");
+                    }
+                    if (taskNumber <= 0) {
+                        throw new MeowException("Meow! Task number must be positive.");
+                    }
+                    if (taskNumber > tasks.size()) {
+                        throw new MeowException("Meow! There is no task number " + taskNumber + ".");
+                    }
+
+                    int taskIndex = taskNumber - 1;
+                    Task deletedTask = tasks.delete(taskIndex);
+                    ui.showTaskDeleted(deletedTask, tasks.size());
+
                 } else if (input.equals("todo")) {
                     throw new MeowException("Meow! A todo needs a description.");
                 } else if (input.equals("deadline")) {
