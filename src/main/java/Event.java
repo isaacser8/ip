@@ -9,8 +9,16 @@ public class Event extends Task{
         this.to = to;
     }
 
-    @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
+        return "[E][" + super.getStatusIcon() + "] "
+                + super.getDescription()
+                + " (from: " + from
+                + " to: " + to + ")";
+    }
+
+    @Override
+    public String toFileString() {
+        return "E | " + super.getStatusForFile() + " | " + super.getDescription()
+                + " | " + from + " | " + to;
     }
 }

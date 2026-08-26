@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Meow {
@@ -7,7 +8,15 @@ public class Meow {
 
         Parser parser = new Parser();
         Scanner sc = new Scanner(System.in);
-        TaskList tasks = new TaskList();
+        Storage storage = new Storage();
+        TaskList tasks;
+
+        try {
+            tasks = storage.loadTasks();
+        } catch (IOException e) {
+            ui.showError("Meow! Something went wrong while saving the tasks.");
+            tasks = new TaskList();
+        }
 
         while (true) {
             String input = sc.nextLine();
@@ -22,23 +31,9 @@ public class Meow {
                     throw new MeowException("Meow! Please specify a task number.");
                 } else if (input.startsWith("mark ")) {
 
-                    String[] parts = input.split(" ");
-                    int taskNumber;
-
-                    try {
-                        taskNumber = Integer.parseInt(parts[1]);
-                    } catch (NumberFormatException e) {
-                        throw new MeowException("Meow! Task number must be a number.");
-                    }
-                    if (taskNumber <= 0) {
-                        throw new MeowException("Meow! Task number must be positive.");
-                    }
-                    if (taskNumber > tasks.size()) {
-                        throw new MeowException("Meow! There is no task number " + taskNumber + ".");
-                    }
-
-                    int taskIndex = taskNumber - 1;
+                    int taskIndex = getTaskIndex(tasks, input);
                     tasks.getTask(taskIndex).markAsDone();
+                    storage.saveTasks(tasks);
                     ui.showTaskMarked(tasks.getTask(taskIndex));
 
                 } else if (input.equals("unmark")) {
@@ -46,23 +41,9 @@ public class Meow {
 
                 } else if (input.startsWith("unmark ")) {
 
-                    String[] parts = input.split(" ");
-                    int taskNumber;
-
-                    try {
-                        taskNumber = Integer.parseInt(parts[1]);
-                    } catch (NumberFormatException e) {
-                        throw new MeowException("Meow! Task number must be a number.");
-                    }
-                    if (taskNumber <= 0) {
-                        throw new MeowException("Meow! Task number must be positive.");
-                    }
-                    if (taskNumber > tasks.size()) {
-                        throw new MeowException("Meow! There is no task number " + taskNumber + ".");
-                    }
-
-                    int taskIndex = taskNumber - 1;
+                    int taskIndex = getTaskIndex(tasks, input);
                     tasks.getTask(taskIndex).markAsNotDone();
+                    storage.saveTasks(tasks);
                     ui.showTaskUnmarked(tasks.getTask(taskIndex));
 
                 } else if (input.startsWith("todo ")
@@ -71,29 +52,16 @@ public class Meow {
 
                     Task task = parser.parseTask(input);
                     tasks.add(task);
+                    storage.saveTasks(tasks);
                     ui.showTaskAdded(task, tasks.size());
 
                 } else if (input.equals("delete")) {
                     throw new MeowException("Meow! Please specify a task number.");
                 } else if (input.startsWith("delete ")) {
 
-                    String[] parts = input.split(" ");
-                    int taskNumber;
-
-                    try {
-                        taskNumber = Integer.parseInt(parts[1]);
-                    } catch (NumberFormatException e) {
-                        throw new MeowException("Meow! Task number must be a number.");
-                    }
-                    if (taskNumber <= 0) {
-                        throw new MeowException("Meow! Task number must be positive.");
-                    }
-                    if (taskNumber > tasks.size()) {
-                        throw new MeowException("Meow! There is no task number " + taskNumber + ".");
-                    }
-
-                    int taskIndex = taskNumber - 1;
+                    int taskIndex = getTaskIndex(tasks, input);
                     Task deletedTask = tasks.delete(taskIndex);
+                    storage.saveTasks(tasks);
                     ui.showTaskDeleted(deletedTask, tasks.size());
 
                 } else if (input.equals("todo")) {
@@ -107,8 +75,29 @@ public class Meow {
                 }
             } catch (MeowException e) {
                 ui.showError(e.getMessage());
+            } catch (IOException e) {
+                ui.showError("Meow! Something went wrong while saving the tasks.");
             }
         }
         ui.showFarewell();
+    }
+
+    private static int getTaskIndex(TaskList tasks, String input) throws MeowException {
+        String[] parts = input.split(" ");
+        int taskNumber;
+
+        try {
+            taskNumber = Integer.parseInt(parts[1]);
+        } catch (NumberFormatException e) {
+            throw new MeowException("Meow! Task number must be a number.");
+        }
+        if (taskNumber <= 0) {
+            throw new MeowException("Meow! Task number must be positive.");
+        }
+        if (taskNumber > tasks.size()) {
+            throw new MeowException("Meow! There is no task number " + taskNumber + ".");
+        }
+
+        return taskNumber - 1;
     }
 }

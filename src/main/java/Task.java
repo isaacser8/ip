@@ -1,13 +1,17 @@
 public class Task {
-    private String description;
+    private final String description;
     private boolean isDone = false;
 
     public Task(String description) {
         this.description = description;
     }
 
+    public int getStatusForFile() {
+        return isDone ? 1 : 0;
+    }
+
     public String getStatusIcon() {
-        return (isDone ? "X" : " ");
+        return isDone ? "X" : " ";
     }
 
     public String getDescription() {
@@ -22,8 +26,7 @@ public class Task {
         this.isDone = false;
     }
 
-    @Override
-    public String toString() {
-        return "[" + this.getStatusIcon() + "] " + this.getDescription();
+    public String toFileString() {
+        return "";
     }
 }
