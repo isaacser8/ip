@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Storage {
@@ -52,7 +53,8 @@ public class Storage {
             task = new Todo(description);
         } else if (type.equals("D")) {
             String by = parts[3].trim();
-            task = new Deadline(description, by);
+            LocalDate byDate = LocalDate.parse(by);
+            task = new Deadline(description, byDate);
         } else {
             String from = parts[3].trim();
             String to = parts[4].trim();

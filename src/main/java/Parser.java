@@ -1,3 +1,6 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
 public class Parser {
 
     private Task parseTodo(String input) throws MeowException {
@@ -21,13 +24,22 @@ public class Parser {
 
         String description = content.substring(0, byIndex).trim();
         String by = content.substring(byIndex + 3).trim();
+
         if (description.isBlank()) {
             throw new MeowException("Meow! A deadline needs a description.");
         }
         if (by.isBlank()) {
             throw new MeowException("Meow! A deadline needs a /by date.");
         }
-        return new Deadline(description, by);
+
+        LocalDate byDate;
+        try {
+            byDate = LocalDate.parse(by);
+        } catch (DateTimeParseException e) {
+            throw new MeowException("Meow! Please enter the date in yyyy-MM-dd format.");
+        }
+
+        return new Deadline(description, byDate);
     }
 
     private Task parseEvent(String input) throws MeowException {
