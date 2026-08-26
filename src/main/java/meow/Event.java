@@ -1,3 +1,5 @@
+package meow;
+
 public class Event extends Task{
 
     protected String from;
