@@ -2,21 +2,26 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Meow {
-    public static void main(String[] args) {
-        Ui ui = new Ui();
-        ui.showGreeting();
+    private final Ui ui;
+    private final Parser parser;
+    private final Storage storage;
+    private TaskList tasks;
 
-        Parser parser = new Parser();
-        Scanner sc = new Scanner(System.in);
-        Storage storage = new Storage();
-        TaskList tasks;
-
+    public Meow() {
+        this.ui = new Ui();
+        this.parser = new Parser();
+        this.storage = new Storage();
         try {
             tasks = storage.loadTasks();
         } catch (IOException e) {
-            ui.showError("Meow! Something went wrong while saving the tasks.");
+            ui.showError("Meow! Something went wrong while loading the tasks.");
             tasks = new TaskList();
         }
+    }
+
+    public void run() {
+        ui.showGreeting();
+        Scanner sc = new Scanner(System.in);
 
         while (true) {
             String input = sc.nextLine();
@@ -31,7 +36,7 @@ public class Meow {
                     throw new MeowException("Meow! Please specify a task number.");
                 } else if (input.startsWith("mark ")) {
 
-                    int taskIndex = getTaskIndex(tasks, input);
+                    int taskIndex = getTaskIndex(input);
                     tasks.getTask(taskIndex).markAsDone();
                     storage.saveTasks(tasks);
                     ui.showTaskMarked(tasks.getTask(taskIndex));
@@ -41,7 +46,7 @@ public class Meow {
 
                 } else if (input.startsWith("unmark ")) {
 
-                    int taskIndex = getTaskIndex(tasks, input);
+                    int taskIndex = getTaskIndex(input);
                     tasks.getTask(taskIndex).markAsNotDone();
                     storage.saveTasks(tasks);
                     ui.showTaskUnmarked(tasks.getTask(taskIndex));
@@ -59,7 +64,7 @@ public class Meow {
                     throw new MeowException("Meow! Please specify a task number.");
                 } else if (input.startsWith("delete ")) {
 
-                    int taskIndex = getTaskIndex(tasks, input);
+                    int taskIndex = getTaskIndex(input);
                     Task deletedTask = tasks.delete(taskIndex);
                     storage.saveTasks(tasks);
                     ui.showTaskDeleted(deletedTask, tasks.size());
@@ -79,10 +84,15 @@ public class Meow {
                 ui.showError("Meow! Something went wrong while saving the tasks.");
             }
         }
+
         ui.showFarewell();
     }
 
-    private static int getTaskIndex(TaskList tasks, String input) throws MeowException {
+    public static void main(String[] args) {
+        new Meow().run();
+    }
+
+    private int getTaskIndex(String input) throws MeowException {
         String[] parts = input.split(" ");
         int taskNumber;
 
