@@ -1,17 +1,17 @@
-public class Ui {
-    private String line = "____________________________________________________________";
-    private String banner =
-                      "███   ███ ███████  █████  ██     ██\n"
-                    + "████ ████ ██      ██   ██ ██     ██\n"
-                    + "██ ███ ██ █████   ██   ██ ██  █  ██\n"
-                    + "██     ██ ██      ██   ██ ██ ███ ██\n"
-                    + "██     ██ ███████  █████   ███ ███\n";
+package meow;
 
-    private String greeting = "Meow! Welcome back. \n" + "Start yapping, I'm all ears!";
+public class Ui {
+    private final String line = "____________________________________________________________";
 
     public void showGreeting() {
         System.out.println(line);
+        String banner = "███   ███ ███████  █████  ██     ██\n"
+                      + "████ ████ ██      ██   ██ ██     ██\n"
+                      + "██ ███ ██ █████   ██   ██ ██  █  ██\n"
+                      + "██     ██ ██      ██   ██ ██ ███ ██\n"
+                      + "██     ██ ███████  █████   ███ ███\n";
         System.out.println(banner);
+        String greeting = "Meow! Welcome back. \n" + "Start yapping, I'm all ears!";
         System.out.println(greeting);
         System.out.println(line);
     }
