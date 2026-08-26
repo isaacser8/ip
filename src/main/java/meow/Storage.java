@@ -15,6 +15,10 @@ public class Storage {
         this.filePath = Paths.get("data", "meow.txt");
     }
 
+    public Storage(Path filePath) {
+        this.filePath = filePath;
+    }
+
     public void saveTasks(TaskList tasks) throws IOException {
         Files.createDirectories(filePath.getParent());
 
