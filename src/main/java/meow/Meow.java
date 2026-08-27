@@ -34,6 +34,14 @@ public class Meow {
 
                 } else if (input.equals("list")) {
                     ui.showTaskList(tasks);
+                } else if (input.equals("find")) {
+                    throw new MeowException("Meow! Please specify a keyword.");
+                } else if (input.startsWith("find ")) {
+
+                    String keyword = parser.parseFindKeyword(input);
+                    TaskList matches = tasks.findTasks(keyword);
+                    ui.showMatchingTasks(matches);
+
                 } else if (input.equals("mark")) {
                     throw new MeowException("Meow! Please specify a task number.");
                 } else if (input.startsWith("mark ")) {
@@ -45,7 +53,6 @@ public class Meow {
 
                 } else if (input.equals("unmark")) {
                     throw new MeowException("Meow! Please specify a task number.");
-
                 } else if (input.startsWith("unmark ")) {
 
                     int taskIndex = getTaskIndex(input);

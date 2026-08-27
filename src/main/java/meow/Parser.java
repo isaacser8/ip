@@ -87,4 +87,19 @@ public class Parser {
         }
         throw new MeowException("Meow! I'm sorry, but I don't know what that means.");
     }
+
+    /**
+     * Extracts the keyword from a find command.
+     *
+     * @param input the full user command.
+     * @return the keyword to search for.
+     * @throws MeowException if no keyword is provided.
+     */
+    public String parseFindKeyword(String input) throws MeowException {
+        String keyword = input.substring(5).trim();
+        if (keyword.isBlank()) {
+            throw new MeowException("Meow! Please specify a keyword.");
+        }
+        return keyword;
+    }
 }
