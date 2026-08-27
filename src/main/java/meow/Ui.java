@@ -114,11 +114,11 @@ public class Ui {
      * @param matches the task list containing matching tasks.
      */
     public void showMatchingTasks(TaskList matches) {
-        System.out.println(line);
+        System.out.println(SEPARATOR);
         System.out.println("Here are the matching tasks in your list:");
         for (int i = 0; i < matches.size(); i++) {
             System.out.println(i + 1 + ". " + matches.getTask(i));
         }
-        System.out.println(line);
+        System.out.println(SEPARATOR);
     }
 }
