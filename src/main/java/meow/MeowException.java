@@ -1,7 +1,7 @@
 package meow;
 
 public class MeowException extends Exception {
-    public MeowException(String e) {
-        super(e);
+    public MeowException(String message) {
+        super(message);
     }
 }

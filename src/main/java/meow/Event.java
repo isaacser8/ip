@@ -1,26 +1,27 @@
 package meow;
 
-public class Event extends Task{
+public class Event extends Task {
 
-    protected String from;
-    protected String to;
+    protected String fromDate;
+    protected String toDate;
 
-    public Event(String description, String from, String to) {
+    public Event(String description, String fromDate, String toDate) {
         super(description);
-        this.from = from;
-        this.to = to;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
     }
 
+    @Override
     public String toString() {
         return "[E][" + super.getStatusIcon() + "] "
                 + super.getDescription()
-                + " (from: " + from
-                + " to: " + to + ")";
+                + " (from: " + fromDate
+                + " to: " + toDate + ")";
     }
 
     @Override
     public String toFileString() {
         return "E | " + super.getStatusForFile() + " | " + super.getDescription()
-                + " | " + from + " | " + to;
+                + " | " + fromDate + " | " + toDate;
     }
 }
