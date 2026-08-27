@@ -3,8 +3,18 @@ package meow;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Parses user commands and converts them into tasks.
+ */
 public class Parser {
 
+    /**
+     * Parses a Todo command into a Todo task.
+     *
+     * @param input the full user command
+     * @return the Todo task represented by the command
+     * @throws MeowException if the command is invalid
+     */
     private Task parseTodo(String input) throws MeowException {
         String content = input.substring(5);
         if (content.isBlank()) {
@@ -13,6 +23,13 @@ public class Parser {
         return new Todo(content);
     }
 
+    /**
+     * Parses a Deadline command into a Deadline task.
+     *
+     * @param input the full user command
+     * @return the Deadline task represented by the command
+     * @throws MeowException if the command is invalid
+     */
     private Task parseDeadline(String input) throws MeowException {
         String content = input.substring(9);
         if (content.isBlank()) {
@@ -44,6 +61,13 @@ public class Parser {
         return new Deadline(description, byDate);
     }
 
+    /**
+     * Parses an Event command into an Event task.
+     *
+     * @param input the full user command
+     * @return the Event task represented by the command
+     * @throws MeowException if the command is invalid
+     */
     private Task parseEvent(String input) throws MeowException {
         String content = input.substring(6).trim();
         if (content.isBlank()) {
@@ -75,6 +99,13 @@ public class Parser {
         return new Event(description, from, to);
     }
 
+    /**
+     * Parses a user command into the corresponding task.
+     *
+     * @param input the full user command
+     * @return the task represented by the command
+     * @throws MeowException if the command is invalid
+     */
     public Task parseTask(String input) throws MeowException {
         if (input.startsWith("todo ")) {
             return parseTodo(input);

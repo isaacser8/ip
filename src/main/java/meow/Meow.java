@@ -3,12 +3,19 @@ package meow;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * Represents the Meow chatbot and coordinates user interaction,
+ * command parsing, task storage, and persistence.
+ */
 public class Meow {
     private final Ui ui;
     private final Parser parser;
     private final Storage storage;
     private TaskList tasks;
 
+    /**
+     * Creates a Meow chatbot and loads previously saved tasks.
+     */
     public Meow() {
         this.ui = new Ui();
         this.parser = new Parser();
@@ -21,6 +28,9 @@ public class Meow {
         }
     }
 
+    /**
+     * Runs the chatbot command loop until the user exits.
+     */
     public void run() {
         ui.showGreeting();
         Scanner sc = new Scanner(System.in);
@@ -90,6 +100,11 @@ public class Meow {
         ui.showFarewell();
     }
 
+    /**
+     * Starts the Meow chatbot.
+     *
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         new Meow().run();
     }
