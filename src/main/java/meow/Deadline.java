@@ -3,8 +3,18 @@ package meow;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Represents a deadline task with a due date.
+ */
 public class Deadline extends Task {
     protected LocalDate byDate;
+
+    /**
+     * Creates a deadline task with the specified description and due date.
+     *
+     * @param description the description of the task
+     * @param byDate the due date of the task
+     */
     public Deadline(String description, LocalDate byDate) {
         super(description);
         this.byDate = byDate;

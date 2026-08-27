@@ -8,7 +8,7 @@ public class Task {
     private boolean isDone = false;
 
     /**
-     * Creates a task with a description. and completion status.
+     * Creates a task with the specified description.
      *
      * @param description the description of the task
      */
