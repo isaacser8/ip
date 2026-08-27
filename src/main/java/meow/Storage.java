@@ -8,17 +8,34 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Scanner;
 
+/**
+ * Handles loading tasks from and saving tasks to a data file.
+ */
 public class Storage {
     private final Path filePath;
 
+    /**
+     * Creates a storage object using the default task data file.
+     */
     public Storage() {
         this.filePath = Paths.get("data", "meow.txt");
     }
 
+    /**
+     * Creates a storage object using the specified file path.
+     *
+     * @param filePath the path of the task data file
+     */
     public Storage(Path filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Saves all tasks in the task list to the data file.
+     *
+     * @param tasks the task list to save
+     * @throws IOException if an error occurs while writing to the file
+     */
     public void saveTasks(TaskList tasks) throws IOException {
         Files.createDirectories(filePath.getParent());
 
@@ -32,6 +49,12 @@ public class Storage {
         writer.close();
     }
 
+    /**
+     * Loads tasks from the data file.
+     *
+     * @return the task list loaded from the file, or an empty task list if the file does not exist
+     * @throws IOException if an error occurs while reading the file
+     */
     public TaskList loadTasks() throws IOException {
         TaskList taskList = new TaskList();
         if (!Files.exists(filePath)) {
