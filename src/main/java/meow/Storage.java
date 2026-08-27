@@ -72,6 +72,12 @@ public class Storage {
         return taskList;
     }
 
+    /**
+     * Creates a task from its stored file components.
+     *
+     * @param parts the components of a stored task
+     * @return the reconstructed task
+     */
     private static Task getTask(String[] parts) {
         String type = parts[0].trim();
         String status = parts[1].trim();

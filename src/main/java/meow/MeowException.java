@@ -8,9 +8,9 @@ public class MeowException extends Exception {
     /**
      * Creates a MeowException with the specified error message.
      *
-     * @param e the error message describing the problem
+     * @param message the error message describing the problem
      */
-    public MeowException(String e) {
-        super(e);
+    public MeowException(String message) {
+        super(message);
     }
 }

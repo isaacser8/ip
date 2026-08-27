@@ -33,10 +33,10 @@ public class Meow {
      */
     public void run() {
         ui.showGreeting();
-        Scanner sc = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            String input = sc.nextLine();
+            String input = scanner.nextLine();
 
             try {
                 if (input.equals("bye")) {
@@ -109,6 +109,13 @@ public class Meow {
         new Meow().run();
     }
 
+    /**
+     * Converts the task number in a user command into a zero-based task index.
+     *
+     * @param input the user command containing the task number
+     * @return the zero-based task index
+     * @throws MeowException if the task number is invalid
+     */
     private int getTaskIndex(String input) throws MeowException {
         String[] parts = input.split(" ");
         int taskNumber;
