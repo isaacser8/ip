@@ -34,13 +34,13 @@ public class StorageTest {
         // Verify task details and completion status are preserved
         assertEquals("read book", loadedTasks.getTask(0).getDescription());
         assertEquals("submit assignment", loadedTasks.getTask(1).getDescription());
-        assertEquals("X", loadedTasks.getTask(0).getStatusIcon());
+        assertEquals("X", loadedTasks.getTask(0).getStatusForDisplay());
 
         // Verify the deadline date is preserved as a LocalDate
         Deadline deadline = (Deadline) loadedTasks.getTask(1);
         assertEquals(
                 LocalDate.of(2026, 8, 28),
-                deadline.getByDate()
+                deadline.getDueDate()
         );
 
         Files.deleteIfExists(tempFile);

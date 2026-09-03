@@ -30,7 +30,7 @@ public class Task {
      *
      * @return "X" if the task is completed, or a blank space otherwise
      */
-    public String getStatusIcon() {
+    public String getStatusForDisplay() {
         return isDone ? "X" : " ";
     }
 

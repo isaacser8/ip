@@ -28,7 +28,7 @@ public class ParserTest {
         assertEquals("CS2103T assignment", task.getDescription());
 
         Deadline deadline = (Deadline) task;
-        assertEquals(LocalDate.of(2026, 8, 28), deadline.getByDate());
+        assertEquals(LocalDate.of(2026, 8, 28), deadline.getDueDate());
     }
 
     @Test

@@ -7,33 +7,33 @@ import java.time.format.DateTimeFormatter;
  * Represents a deadline task with a due date.
  */
 public class Deadline extends Task {
-    protected LocalDate byDate;
+    protected LocalDate dueDate;
 
     /**
      * Creates a deadline task with the specified description and due date.
      *
      * @param description the description of the task
-     * @param byDate the due date of the task
+     * @param dueDate the due date of the task
      */
-    public Deadline(String description, LocalDate byDate) {
+    public Deadline(String description, LocalDate dueDate) {
         super(description);
-        this.byDate = byDate;
+        this.dueDate = dueDate;
     }
 
-    public LocalDate getByDate() {
-        return byDate;
+    public LocalDate getDueDate() {
+        return dueDate;
     }
 
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy");
-        return "[D][" + super.getStatusIcon() + "] "
+        return "[D][" + super.getStatusForDisplay() + "] "
                 + super.getDescription()
-                + " (by: " + byDate.format(formatter) + ")";
+                + " (by: " + dueDate.format(formatter) + ")";
     }
 
     @Override
     public String toFileString() {
-        return "D | " + super.getStatusForFile() + " | " + super.getDescription() + " | " + byDate;
+        return "D | " + super.getStatusForFile() + " | " + super.getDescription() + " | " + dueDate;
     }
 }

@@ -23,7 +23,7 @@ public class Event extends Task {
 
     @Override
     public String toString() {
-        return "[E][" + super.getStatusIcon() + "] "
+        return "[E][" + super.getStatusForDisplay() + "] "
                 + super.getDescription()
                 + " (from: " + fromDate
                 + " to: " + toDate + ")";

@@ -65,7 +65,7 @@ public class Storage {
             String line = scanner.nextLine();
             String[] parts = line.split("\\|");
 
-            Task task = getTask(parts);
+            Task task = parseTask(parts);
             taskList.add(task);
         }
         scanner.close();
@@ -78,7 +78,7 @@ public class Storage {
      * @param parts the components of a stored task
      * @return the reconstructed task
      */
-    private static Task getTask(String[] parts) {
+    private static Task parseTask(String[] parts) {
         String type = parts[0].trim();
         String status = parts[1].trim();
         String description = parts[2].trim();
