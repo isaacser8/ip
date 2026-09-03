@@ -8,6 +8,7 @@
 
 <AnchorPane prefHeight="600.0"
             prefWidth="400.0"
+            stylesheets="@../css/main.css"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="meow.MainWindow">
@@ -21,21 +22,24 @@
                     AnchorPane.rightAnchor="0.0">
             <content>
                 <VBox fx:id="dialogContainer"
-                      spacing="10.0"
+                      spacing="8.0"
+                      styleClass="dialog-container"
                       prefWidth="380.0"/>
             </content>
         </ScrollPane>
 
         <TextField fx:id="userInput"
                    promptText="Type a command..."
+                   styleClass="input-field"
                    onAction="#handleUserInput"
-                   AnchorPane.bottomAnchor="5.0"
-                   AnchorPane.leftAnchor="5.0"
-                   AnchorPane.rightAnchor="85.0"/>
+                   AnchorPane.bottomAnchor="8.0"
+                   AnchorPane.leftAnchor="8.0"
+                   AnchorPane.rightAnchor="90.0"/>
 
         <Button text="Send"
+                styleClass="send-button"
                 onAction="#handleUserInput"
-                AnchorPane.bottomAnchor="5.0"
-                AnchorPane.rightAnchor="5.0"/>
+                AnchorPane.bottomAnchor="8.0"
+                AnchorPane.rightAnchor="8.0"/>
     </children>
 </AnchorPane>
