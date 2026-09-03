@@ -37,74 +37,93 @@ public class Meow {
 
         while (true) {
             String input = scanner.nextLine();
+            System.out.println(getResponse(input));
 
-            try {
-                if (input.equals("bye")) {
-                    break;
-
-                } else if (input.equals("list")) {
-                    ui.showTaskList(tasks);
-                } else if (input.equals("find")) {
-                    throw new MeowException("Meow! Please specify a keyword.");
-                } else if (input.startsWith("find ")) {
-
-                    String keyword = parser.parseFindKeyword(input);
-                    TaskList matches = tasks.findTasks(keyword);
-                    ui.showMatchingTasks(matches);
-
-                } else if (input.equals("mark")) {
-                    throw new MeowException("Meow! Please specify a task number.");
-                } else if (input.startsWith("mark ")) {
-
-                    int taskIndex = getTaskIndex(input);
-                    tasks.getTask(taskIndex).markAsDone();
-                    storage.saveTasks(tasks);
-                    ui.showTaskMarked(tasks.getTask(taskIndex));
-
-                } else if (input.equals("unmark")) {
-                    throw new MeowException("Meow! Please specify a task number.");
-                } else if (input.startsWith("unmark ")) {
-
-                    int taskIndex = getTaskIndex(input);
-                    tasks.getTask(taskIndex).markAsNotDone();
-                    storage.saveTasks(tasks);
-                    ui.showTaskUnmarked(tasks.getTask(taskIndex));
-
-                } else if (input.startsWith("todo ")
-                        || input.startsWith("deadline ")
-                        || input.startsWith("event ")) {
-
-                    Task task = parser.parseTask(input);
-                    tasks.add(task);
-                    storage.saveTasks(tasks);
-                    ui.showTaskAdded(task, tasks.size());
-
-                } else if (input.equals("delete")) {
-                    throw new MeowException("Meow! Please specify a task number.");
-                } else if (input.startsWith("delete ")) {
-
-                    int taskIndex = getTaskIndex(input);
-                    Task deletedTask = tasks.delete(taskIndex);
-                    storage.saveTasks(tasks);
-                    ui.showTaskDeleted(deletedTask, tasks.size());
-
-                } else if (input.equals("todo")) {
-                    throw new MeowException("Meow! A todo needs a description.");
-                } else if (input.equals("deadline")) {
-                    throw new MeowException("Meow! A deadline needs a description and a /by date.");
-                } else if (input.equals("event")) {
-                    throw new MeowException("Meow! An event needs a description, a /from date and a /to date.");
-                } else {
-                    throw new MeowException("Meow! I'm sorry, but I don't know what that means.");
-                }
-            } catch (MeowException e) {
-                ui.showError(e.getMessage());
-            } catch (IOException e) {
-                ui.showError("Meow! Something went wrong while saving the tasks.");
+            if (input.equals("bye")) {
+                break;
             }
         }
+    }
 
-        ui.showFarewell();
+    /**
+     * Processes a user command and returns the chatbot's response.
+     *
+     * @param input the user command
+     * @return the chatbot's response
+     */
+    public String getResponse(String input) {
+        try {
+            if (input.equals("bye")) {
+                return ui.getFarewellMessage();
+
+            } else if (input.equals("list")) {
+                return ui.getTaskListMessage(tasks);
+
+            } else if (input.equals("find")) {
+                throw new MeowException("Meow! Please specify a keyword.");
+
+            } else if (input.startsWith("find ")) {
+                String keyword = parser.parseFindKeyword(input);
+                TaskList matches = tasks.findTasks(keyword);
+                return ui.getMatchingTasksMessage(matches);
+
+            } else if (input.equals("mark")) {
+                throw new MeowException("Meow! Please specify a task number.");
+
+            } else if (input.startsWith("mark ")) {
+                int taskIndex = getTaskIndex(input);
+                tasks.getTask(taskIndex).markAsDone();
+                storage.saveTasks(tasks);
+                return ui.getTaskMarkedMessage(tasks.getTask(taskIndex));
+
+            } else if (input.equals("unmark")) {
+                throw new MeowException("Meow! Please specify a task number.");
+
+            } else if (input.startsWith("unmark ")) {
+                int taskIndex = getTaskIndex(input);
+                tasks.getTask(taskIndex).markAsNotDone();
+                storage.saveTasks(tasks);
+                return ui.getTaskUnmarkedMessage(tasks.getTask(taskIndex));
+
+            } else if (input.startsWith("todo ")
+                    || input.startsWith("deadline ")
+                    || input.startsWith("event ")) {
+
+                Task task = parser.parseTask(input);
+                tasks.add(task);
+                storage.saveTasks(tasks);
+                return ui.getTaskAddedMessage(task, tasks.size());
+
+            } else if (input.equals("delete")) {
+                throw new MeowException("Meow! Please specify a task number.");
+
+            } else if (input.startsWith("delete ")) {
+                int taskIndex = getTaskIndex(input);
+                Task deletedTask = tasks.delete(taskIndex);
+                storage.saveTasks(tasks);
+                return ui.getTaskDeletedMessage(deletedTask, tasks.size());
+
+            } else if (input.equals("todo")) {
+                throw new MeowException("Meow! A todo needs a description.");
+
+            } else if (input.equals("deadline")) {
+                throw new MeowException(
+                        "Meow! A deadline needs a description and a /by date.");
+
+            } else if (input.equals("event")) {
+                throw new MeowException(
+                        "Meow! An event needs a description, a /from date and a /to date.");
+
+            } else {
+                throw new MeowException(
+                        "Meow! I'm sorry, but I don't know what that means.");
+            }
+
+        } catch (MeowException e) {
+            return e.getMessage();
+        } catch (IOException e) {
+            return "Meow! Something went wrong while saving the tasks.";
+        }
     }
 
     /**

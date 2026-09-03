@@ -121,4 +121,112 @@ public class Ui {
         }
         System.out.println(SEPARATOR);
     }
+
+    /**
+     * Returns the greeting message.
+     *
+     * @return the greeting message
+     */
+    public String getGreetingMessage() {
+        return "Meow! Welcome back.\nStart yapping, I'm all ears!";
+    }
+
+    /**
+     * Returns the farewell message.
+     *
+     * @return the farewell message
+     */
+    public String getFarewellMessage() {
+        return "Marvellous yap session. Let's catch up soon meow!";
+    }
+
+    /**
+     * Returns the task list as a formatted message.
+     *
+     * @param taskList the task list to display
+     * @return the formatted task list
+     */
+    public String getTaskListMessage(TaskList taskList) {
+        return formatTaskList("Here are the tasks in your list:", taskList);
+    }
+
+    /**
+     * Returns a message confirming that a task was marked as completed.
+     *
+     * @param task the task that was marked
+     * @return the confirmation message
+     */
+    public String getTaskMarkedMessage(Task task) {
+        return "Meow! I've marked this task as done:\n" + task;
+    }
+
+    /**
+     * Returns a message confirming that a task was marked as not completed.
+     *
+     * @param task the task that was unmarked
+     * @return the confirmation message
+     */
+    public String getTaskUnmarkedMessage(Task task) {
+        return "Meow! I've marked this task as not done yet:\n" + task;
+    }
+
+    /**
+     * Returns a message confirming that a task was added.
+     *
+     * @param task the task that was added
+     * @param taskCount the total number of tasks
+     * @return the confirmation message
+     */
+    public String getTaskAddedMessage(Task task, int taskCount) {
+        return "Meow! I've added this task:\n"
+                + task
+                + "\nNow you have "
+                + taskCount
+                + " tasks in the list.";
+    }
+
+    /**
+     * Returns a message confirming that a task was deleted.
+     *
+     * @param task the task that was deleted
+     * @param taskCount the total number of tasks
+     * @return the confirmation message
+     */
+    public String getTaskDeletedMessage(Task task, int taskCount) {
+        return "Meow! I've removed this task:\n"
+                + task
+                + "\nNow you have "
+                + taskCount
+                + " tasks in the list.";
+    }
+
+    /**
+     * Returns matching tasks as a formatted message.
+     *
+     * @param matches the matching tasks
+     * @return the formatted matching task list
+     */
+    public String getMatchingTasksMessage(TaskList matches) {
+        return formatTaskList("Here are the matching tasks in your list:", matches);
+    }
+
+    /**
+     * Formats a task list with the given heading.
+     *
+     * @param heading the heading to display
+     * @param taskList the task list to format
+     * @return the formatted message
+     */
+    private String formatTaskList(String heading, TaskList taskList) {
+        StringBuilder message = new StringBuilder(heading);
+
+        for (int i = 0; i < taskList.size(); i++) {
+            message.append("\n")
+                    .append(i + 1)
+                    .append(". ")
+                    .append(taskList.getTask(i));
+        }
+
+        return message.toString();
+    }
 }
