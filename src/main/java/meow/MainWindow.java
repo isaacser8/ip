@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
  * Controls the main application window.
  */
 public class MainWindow {
+    private final Meow meow = new Meow();
 
     @FXML
     private ScrollPane scrollPane;
@@ -40,8 +41,10 @@ public class MainWindow {
             return;
         }
 
+        String response = meow.getResponse(input);
+
         dialogContainer.getChildren().add(new Label("You: " + input));
-        dialogContainer.getChildren().add(new Label("Meow: " + input));
+        dialogContainer.getChildren().add(new Label("Meow: " + response));
 
         userInput.clear();
     }
