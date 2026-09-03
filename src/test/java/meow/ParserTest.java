@@ -35,10 +35,7 @@ public class ParserTest {
     void parseTask_invalidDeadline_throwsException() {
         Parser parser = new Parser();
 
-        assertThrows(
-                MeowException.class,
-                () -> parser.parseTask("deadline CS2103T assignment /by 2026-99-99")
-        );
+        assertThrows(MeowException.class, () -> parser.parseTask("deadline CS2103T assignment /by 2026-99-99"));
     }
 
     @Test
@@ -54,10 +51,7 @@ public class ParserTest {
     void parseTask_unknownCommand_throwsException() {
         Parser parser = new Parser();
 
-        assertThrows(
-                MeowException.class,
-                () -> parser.parseTask("blah blah")
-        );
+        assertThrows(MeowException.class, () -> parser.parseTask("blah blah"));
     }
 
     @Test
@@ -80,7 +74,6 @@ public class ParserTest {
     void parseFindKeyword_missingKeyword_throwsException() {
         Parser parser = new Parser();
 
-        assertThrows(MeowException.class,
-                () -> parser.parseFindKeyword("find "));
+        assertThrows(MeowException.class, () -> parser.parseFindKeyword("find "));
     }
 }
