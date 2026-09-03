@@ -128,7 +128,9 @@ public class Ui {
      * @return the greeting message
      */
     public String getGreetingMessage() {
-        return "Meow! Welcome back.\nStart yapping, I'm all ears!";
+        return formatLines(
+                "Meow! Welcome back.",
+                "Start yapping, I'm all ears!");
     }
 
     /**
@@ -157,7 +159,9 @@ public class Ui {
      * @return the confirmation message
      */
     public String getTaskMarkedMessage(Task task) {
-        return "Meow! I've marked this task as done:\n" + task;
+        return formatLines(
+                "Meow! I've marked this task as done:",
+                task.toString());
     }
 
     /**
@@ -167,7 +171,9 @@ public class Ui {
      * @return the confirmation message
      */
     public String getTaskUnmarkedMessage(Task task) {
-        return "Meow! I've marked this task as not done yet:\n" + task;
+        return formatLines(
+                "Meow! I've marked this task as not done yet:",
+                task.toString());
     }
 
     /**
@@ -178,11 +184,10 @@ public class Ui {
      * @return the confirmation message
      */
     public String getTaskAddedMessage(Task task, int taskCount) {
-        return "Meow! I've added this task:\n"
-                + task
-                + "\nNow you have "
-                + taskCount
-                + " tasks in the list.";
+        return formatLines(
+                "Meow! I've added this task:",
+                task.toString(),
+                "Now you have " + taskCount + " tasks in the list.");
     }
 
     /**
@@ -193,11 +198,10 @@ public class Ui {
      * @return the confirmation message
      */
     public String getTaskDeletedMessage(Task task, int taskCount) {
-        return "Meow! I've removed this task:\n"
-                + task
-                + "\nNow you have "
-                + taskCount
-                + " tasks in the list.";
+        return formatLines(
+                "Meow! I've removed this task:",
+                task.toString(),
+                "Now you have " + taskCount + " tasks in the list.");
     }
 
     /**
@@ -228,5 +232,15 @@ public class Ui {
         }
 
         return message.toString();
+    }
+
+    /**
+     * Combines multiple lines into one message.
+     *
+     * @param lines the lines to combine
+     * @return the combined message
+     */
+    private String formatLines(String... lines) {
+        return String.join("\n", lines);
     }
 }
