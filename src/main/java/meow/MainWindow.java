@@ -1,16 +1,16 @@
 package meow;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-import javafx.application.Platform;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.layout.HBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
  * Controls the main application window.
@@ -99,12 +99,6 @@ public class MainWindow {
         dialogContainer.getChildren().add(container);
     }
 
-    /**
-     * Creates a circular avatar.
-     *
-     * @param emoji the emoji to display
-     * @return the avatar label
-     */
     /**
      * Creates an avatar from the given image resource.
      *
