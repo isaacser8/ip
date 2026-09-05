@@ -55,11 +55,13 @@ public class TaskList {
     public TaskList findTasks(String keyword) {
         TaskList matches = new TaskList();
         String lowerKeyword = keyword.toLowerCase();
-        for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(lowerKeyword)) {
-                matches.add(task);
-            }
-        }
+
+        tasks.stream()
+                .filter(task -> task.getDescription()
+                        .toLowerCase()
+                        .contains(lowerKeyword))
+                .forEach(matches::add);
+
         return matches;
     }
 }
