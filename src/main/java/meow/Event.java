@@ -4,6 +4,7 @@ package meow;
  * Represents an event task with a start and end time.
  */
 public class Event extends Task {
+    static final String STORAGE_TYPE = "E";
 
     protected String fromDate;
     protected String toDate;
@@ -31,7 +32,7 @@ public class Event extends Task {
 
     @Override
     public String toFileString() {
-        return "E | " + super.getStatusForFile() + " | " + super.getDescription()
+        return STORAGE_TYPE + " | " + super.getStatusForFile() + " | " + super.getDescription()
                 + " | " + fromDate + " | " + toDate;
     }
 }

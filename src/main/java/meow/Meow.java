@@ -63,45 +63,30 @@ public class Meow {
                 throw new MeowException("Meow! Please specify a keyword.");
 
             } else if (input.startsWith("find ")) {
-                String keyword = parser.parseFindKeyword(input);
-                TaskList matches = tasks.findTasks(keyword);
-                return ui.getMatchingTasksMessage(matches);
+                return findTasks(input);
 
             } else if (input.equals("mark")) {
                 throw new MeowException("Meow! Please specify a task number.");
 
             } else if (input.startsWith("mark ")) {
-                int taskIndex = getTaskIndex(input);
-                tasks.getTask(taskIndex).markAsDone();
-                storage.saveTasks(tasks);
-                return ui.getTaskMarkedMessage(tasks.getTask(taskIndex));
+                return markTask(input);
 
             } else if (input.equals("unmark")) {
                 throw new MeowException("Meow! Please specify a task number.");
 
             } else if (input.startsWith("unmark ")) {
-                int taskIndex = getTaskIndex(input);
-                tasks.getTask(taskIndex).markAsNotDone();
-                storage.saveTasks(tasks);
-                return ui.getTaskUnmarkedMessage(tasks.getTask(taskIndex));
+                return unmarkTask(input);
 
             } else if (input.startsWith("todo ")
                     || input.startsWith("deadline ")
                     || input.startsWith("event ")) {
-
-                Task task = parser.parseTask(input);
-                tasks.add(task);
-                storage.saveTasks(tasks);
-                return ui.getTaskAddedMessage(task, tasks.size());
+                return addTask(input);
 
             } else if (input.equals("delete")) {
                 throw new MeowException("Meow! Please specify a task number.");
 
             } else if (input.startsWith("delete ")) {
-                int taskIndex = getTaskIndex(input);
-                Task deletedTask = tasks.delete(taskIndex);
-                storage.saveTasks(tasks);
-                return ui.getTaskDeletedMessage(deletedTask, tasks.size());
+                return deleteTask(input);
 
             } else if (input.equals("todo")) {
                 throw new MeowException("Meow! A todo needs a description.");
@@ -159,5 +144,88 @@ public class Meow {
         }
 
         return taskNumber - 1;
+    }
+
+    /**
+     * Finds tasks that match the keyword in the user command.
+     *
+     * @param input the find command
+     * @return the formatted list of matching tasks
+     * @throws MeowException if the keyword is invalid
+     */
+    private String findTasks(String input) throws MeowException {
+        String keyword = parser.parseFindKeyword(input);
+        TaskList matches = tasks.findTasks(keyword);
+        return ui.getMatchingTasksMessage(matches);
+    }
+
+    /**
+     * Marks the task specified by the user as completed.
+     *
+     * @param input the mark command
+     * @return the confirmation message
+     * @throws MeowException if the task number is invalid
+     * @throws IOException if the updated task list cannot be saved
+     */
+    private String markTask(String input) throws MeowException, IOException {
+        int taskIndex = getTaskIndex(input);
+        Task task = tasks.getTask(taskIndex);
+
+        task.markAsDone();
+        storage.saveTasks(tasks);
+
+        return ui.getTaskMarkedMessage(task);
+    }
+
+    /**
+     * Marks the specified task as not completed.
+     *
+     * @param input the unmark command
+     * @return the confirmation message
+     * @throws MeowException if the task number is invalid
+     * @throws IOException if the task list cannot be saved
+     */
+    private String unmarkTask(String input) throws MeowException, IOException {
+        int taskIndex = getTaskIndex(input);
+        Task task = tasks.getTask(taskIndex);
+
+        task.markAsNotDone();
+        storage.saveTasks(tasks);
+
+        return ui.getTaskUnmarkedMessage(task);
+    }
+
+    /**
+     * Adds a task from the user command.
+     *
+     * @param input the task command
+     * @return the confirmation message
+     * @throws MeowException if the task command is invalid
+     * @throws IOException if the task list cannot be saved
+     */
+    private String addTask(String input) throws MeowException, IOException {
+        Task task = parser.parseTask(input);
+
+        tasks.add(task);
+        storage.saveTasks(tasks);
+
+        return ui.getTaskAddedMessage(task, tasks.size());
+    }
+
+    /**
+     * Deletes the task specified by the user.
+     *
+     * @param input the delete command
+     * @return the confirmation message
+     * @throws MeowException if the task number is invalid
+     * @throws IOException if the task list cannot be saved
+     */
+    private String deleteTask(String input) throws MeowException, IOException {
+        int taskIndex = getTaskIndex(input);
+        Task deletedTask = tasks.delete(taskIndex);
+
+        storage.saveTasks(tasks);
+
+        return ui.getTaskDeletedMessage(deletedTask, tasks.size());
     }
 }

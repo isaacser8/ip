@@ -7,7 +7,9 @@ import java.time.format.DateTimeFormatter;
  * Represents a deadline task with a due date.
  */
 public class Deadline extends Task {
+    static final String STORAGE_TYPE = "D";
     protected LocalDate dueDate;
+
 
     /**
      * Creates a deadline task with the specified description and due date.
@@ -34,6 +36,6 @@ public class Deadline extends Task {
 
     @Override
     public String toFileString() {
-        return "D | " + super.getStatusForFile() + " | " + super.getDescription() + " | " + dueDate;
+        return STORAGE_TYPE + " | " + super.getStatusForFile() + " | " + super.getDescription() + " | " + dueDate;
     }
 }
