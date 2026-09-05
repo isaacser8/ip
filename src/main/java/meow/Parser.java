@@ -16,6 +16,7 @@ public class Parser {
      * @throws MeowException if the command is invalid
      */
     private Task parseTodo(String input) throws MeowException {
+        assert input.startsWith("todo ") : "parseTodo expects a todo command";
         String content = input.substring(5);
         if (content.isBlank()) {
             throw new MeowException("Meow! A todo needs a description.");
@@ -31,6 +32,7 @@ public class Parser {
      * @throws MeowException if the command is invalid
      */
     private Task parseDeadline(String input) throws MeowException {
+        assert input.startsWith("deadline ") : "parseDeadline expects a deadline command";
         String content = input.substring(9);
         if (content.isBlank()) {
             throw new MeowException("Meow! A deadline needs a description and a /by date.");
@@ -69,6 +71,7 @@ public class Parser {
      * @throws MeowException if the command is invalid
      */
     private Task parseEvent(String input) throws MeowException {
+        assert input.startsWith("event ") : "parseEvent expects an event command";
         String content = input.substring(6).trim();
         if (content.isBlank()) {
             throw new MeowException("Meow! An event needs a description, a /from date and a /to date.");
