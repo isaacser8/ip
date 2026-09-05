@@ -84,9 +84,9 @@ public class Storage {
         String description = parts[2].trim();
 
         Task task;
-        if (type.equals("T")) {
+        if (type.equals(Todo.STORAGE_TYPE)) {
             task = new Todo(description);
-        } else if (type.equals("D")) {
+        } else if (type.equals(Deadline.STORAGE_TYPE)) {
             String by = parts[3].trim();
             LocalDate byDate = LocalDate.parse(by);
             task = new Deadline(description, byDate);
