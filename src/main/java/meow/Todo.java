@@ -4,6 +4,7 @@ package meow;
  * Represents a todo task.
  */
 public class Todo extends Task {
+    static final String STORAGE_TYPE = "T";
 
     /**
      * Creates a todo task with the specified description.
@@ -21,6 +22,6 @@ public class Todo extends Task {
 
     @Override
     public String toFileString() {
-        return "T | " + super.getStatusForFile() + " | " + super.getDescription();
+        return STORAGE_TYPE + " | " + super.getStatusForFile() + " | " + super.getDescription();
     }
 }
