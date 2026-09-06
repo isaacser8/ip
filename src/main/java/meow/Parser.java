@@ -99,7 +99,23 @@ public class Parser {
             throw new MeowException("Meow! An event needs a /to date.");
         }
 
-        return new Event(description, from, to);
+        LocalDate fromDate;
+        LocalDate toDate;
+
+        try {
+            fromDate = LocalDate.parse(from);
+            toDate = LocalDate.parse(to);
+        } catch (DateTimeParseException e) {
+            throw new MeowException(
+                    "Meow! Please enter event dates in yyyy-MM-dd format.");
+        }
+
+        if (toDate.isBefore(fromDate)) {
+            throw new MeowException(
+                    "Meow! An event cannot end before it starts.");
+        }
+
+        return new Event(description, fromDate, toDate);
     }
 
     /**
