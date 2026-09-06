@@ -61,19 +61,19 @@ public class Storage {
         if (!Files.exists(filePath)) {
             return taskList;
         }
-        Scanner scanner = new Scanner(filePath.toFile());
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            String[] parts = line.split("\\|");
+        try (Scanner scanner = new Scanner(filePath.toFile())) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split("\\|");
 
-            try {
-                Task task = parseTask(parts);
-                taskList.add(task);
-            } catch (DateTimeParseException | ArrayIndexOutOfBoundsException e) {
-                throw new IOException("Invalid task data found in storage.", e);
+                try {
+                    Task task = parseTask(parts);
+                    taskList.add(task);
+                } catch (DateTimeParseException | ArrayIndexOutOfBoundsException e) {
+                    throw new IOException("Invalid task data found in storage.", e);
+                }
             }
         }
-        scanner.close();
         return taskList;
     }
 
