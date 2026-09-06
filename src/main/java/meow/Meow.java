@@ -65,6 +65,9 @@ public class Meow {
             } else if (input.startsWith("find ")) {
                 return findTasks(input);
 
+            } else if (input.equals("sort")) {
+                return sortTasks();
+
             } else if (input.equals("mark")) {
                 throw new MeowException("Meow! Please specify a task number.");
 
@@ -227,5 +230,18 @@ public class Meow {
         storage.saveTasks(tasks);
 
         return ui.getTaskDeletedMessage(deletedTask, tasks.size());
+    }
+
+    /**
+     * Sorts tasks chronologically and saves the updated order.
+     *
+     * @return the confirmation message
+     * @throws IOException if the task list cannot be saved
+     */
+    private String sortTasks() throws IOException {
+        tasks.sortChronologically();
+        storage.saveTasks(tasks);
+
+        return ui.getTasksSortedMessage();
     }
 }

@@ -143,4 +143,13 @@ public class Ui {
     private String formatLines(String... lines) {
         return String.join("\n", lines);
     }
+
+    /**
+     * Returns a message confirming that the tasks were sorted.
+     *
+     * @return the confirmation message
+     */
+    public String getTasksSortedMessage() {
+        return "Meow! Tasks have been sorted chronologically.";
+    }
 }

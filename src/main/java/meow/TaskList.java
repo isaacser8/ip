@@ -1,5 +1,6 @@
 package meow;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -64,5 +65,48 @@ public class TaskList {
                 .forEach(matches::add);
 
         return matches;
+    }
+
+    /**
+     * Sorts dated tasks chronologically and places undated tasks afterwards.
+     * Tasks with the same date retain their original relative order.
+     */
+    public void sortChronologically() {
+        tasks.sort((first, second) -> {
+            LocalDate firstDate = getTaskDate(first);
+            LocalDate secondDate = getTaskDate(second);
+
+            if (firstDate == null && secondDate == null) {
+                return 0;
+            }
+
+            if (firstDate == null) {
+                return 1;
+            }
+
+            if (secondDate == null) {
+                return -1;
+            }
+
+            return firstDate.compareTo(secondDate);
+        });
+    }
+
+    /**
+     * Returns the date used to sort a task.
+     *
+     * @param task the task to inspect
+     * @return the task date, or null if the task has no date
+     */
+    private LocalDate getTaskDate(Task task) {
+        if (task instanceof Deadline deadline) {
+            return deadline.getDueDate();
+        }
+
+        if (task instanceof Event event) {
+            return event.getFromDate();
+        }
+
+        return null;
     }
 }
