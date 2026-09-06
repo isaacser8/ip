@@ -1,30 +1,146 @@
 # Meow User Guide
 
-// Update the title above to match the actual product name
+Meow is a task-management chatbot that helps you keep track of todos, deadlines, and events through simple text commands.
 
-// Product screenshot goes here
+## Adding a todo
 
-// Product intro goes here
+Adds a task without a date.
 
-## Adding deadlines
+Format:
+`todo DESCRIPTION`
 
-// Describe the action and its outcome.
+Example:
+`todo read book`
 
-// Give examples of usage
+Meow adds the todo to your task list.
 
-Example: `keyword (optional arguments)`
+## Adding a deadline
 
-// A description of the expected outcome goes here
+Adds a task that needs to be completed by a specific date.
+
+Format:
+`deadline DESCRIPTION /by yyyy-MM-dd`
+
+Example:
+`deadline submit assignment /by 2026-09-10`
+
+Dates must be entered in the `yyyy-MM-dd` format.
+
+## Adding an event
+
+Adds an event with a start and end date.
+
+Format:
+`event DESCRIPTION /from yyyy-MM-dd /to yyyy-MM-dd`
+
+Example:
+`event project meeting /from 2026-09-08 /to 2026-09-09`
+
+Both dates must use the `yyyy-MM-dd` format.
+
+The end date cannot be earlier than the start date.
+
+## Listing tasks
+
+Displays all tasks currently stored in Meow.
+
+Format:
+`list`
+
+Example output:
 
 ```
-expected output
+Here are the tasks in your list:
+1. [T][ ] read book
+2. [D][ ] submit assignment (by: Sep 10 2026)
+3. [E][ ] project meeting (from: Sep 08 2026 to: Sep 09 2026)
 ```
+## Marking a task as done
 
-## Feature ABC
+Marks a task as completed.
 
-// Feature details
+Format:
+`mark TASK_NUMBER`
+
+`TASK_NUMBER` refers to the number shown by the list command.
 
 
-## Feature XYZ
+Example:
+`mark 2`
 
-// Feature details
+## Marking a task as not done
+
+Marks a completed task as not completed.
+
+Format:
+`unmark TASK_NUMBER`
+
+`TASK_NUMBER` refers to the number shown by the list command.
+
+Example:
+`unmark 2`
+
+## Deleting a task
+
+Removes a task from the task list.
+
+Format:
+`delete TASK_NUMBER`
+
+Example:
+`delete 3`
+
+## Finding tasks
+
+Finds tasks whose descriptions contain the specified keyword.
+
+Format:
+`find KEYWORD`
+
+Example:
+`find book`
+
+The search is case-insensitive.
+
+## Sorting tasks
+
+Sorts dated tasks chronologically.
+
+Format:
+`sort`
+
+Deadlines are sorted according to their due dates, while events are sorted according to their start dates.
+
+Tasks with the same date retain their existing relative order. Todos, which do not have dates, are placed after all dated tasks.
+
+Example:
+
+```
+todo buy milk
+deadline submit report /by 2026-09-10
+event meeting /from 2026-09-05 /to 2026-09-05
+deadline quiz /by 2026-09-08
+```
+After entering:
+`sort`
+
+the task order becomes:
+
+```
+1. [E][ ] meeting (from: Sep 05 2026 to: Sep 05 2026)
+2. [D][ ] quiz (by: Sep 08 2026)
+3. [D][ ] submit report (by: Sep 10 2026)
+4. [T][ ] buy milk
+```
+Meow confirms the operation with: 
+
+`Meow! Tasks have been sorted chronologically.`
+   
+The sorted order is saved and remains after restarting the application.
+
+## Exiting Meow
+
+Ends the current session.
+
+Format:
+`bye`
