@@ -41,10 +41,31 @@ public class ParserTest {
     @Test
     void parseTask_validEvent_returnsEvent() throws MeowException {
         Parser parser = new Parser();
-        Task task = parser.parseTask("event Splashdown /from 5pm /to 9pm");
+        Task task = parser.parseTask(
+                "event Splashdown /from 2026-09-05 /to 2026-09-06");
 
         assertInstanceOf(Event.class, task);
         assertEquals("Splashdown", task.getDescription());
+
+        Event event = (Event) task;
+        assertEquals(LocalDate.of(2026, 9, 5), event.getFromDate());
+        assertEquals(LocalDate.of(2026, 9, 6), event.getToDate());
+    }
+
+    @Test
+    void parseTask_invalidEventDate_throwsException() {
+        Parser parser = new Parser();
+
+        assertThrows(MeowException.class, () ->
+                parser.parseTask("event Splashdown /from tomorrow /to 2026-09-06"));
+    }
+
+    @Test
+    void parseTask_eventEndsBeforeStart_throwsException() {
+        Parser parser = new Parser();
+
+        assertThrows(MeowException.class, () ->
+                parser.parseTask("event Splashdown /from 2026-09-10 /to 2026-09-05"));
     }
 
     @Test

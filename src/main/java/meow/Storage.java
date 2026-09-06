@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 /**
@@ -60,15 +61,19 @@ public class Storage {
         if (!Files.exists(filePath)) {
             return taskList;
         }
-        Scanner scanner = new Scanner(filePath.toFile());
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            String[] parts = line.split("\\|");
+        try (Scanner scanner = new Scanner(filePath.toFile())) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split("\\|");
 
-            Task task = parseTask(parts);
-            taskList.add(task);
+                try {
+                    Task task = parseTask(parts);
+                    taskList.add(task);
+                } catch (DateTimeParseException | ArrayIndexOutOfBoundsException e) {
+                    throw new IOException("Invalid task data found in storage.", e);
+                }
+            }
         }
-        scanner.close();
         return taskList;
     }
 
@@ -93,7 +98,9 @@ public class Storage {
         } else {
             String from = parts[3].trim();
             String to = parts[4].trim();
-            task = new Event(description, from, to);
+            LocalDate fromDate = LocalDate.parse(from);
+            LocalDate toDate = LocalDate.parse(to);
+            task = new Event(description, fromDate, toDate);
         }
 
         if (status.equals("1")) {
