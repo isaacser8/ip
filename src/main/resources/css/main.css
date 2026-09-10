@@ -6,10 +6,11 @@
 }
 
 .meow-bubble {
-    -fx-background-color: #e8e8e8;
+    -fx-background-color: #2b2b2b;
     -fx-background-radius: 14px 14px 14px 2px;
     -fx-padding: 9px 13px;
     -fx-font-size: 14px;
+    -fx-text-fill: white;
 }
 
 .avatar {

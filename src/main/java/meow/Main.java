@@ -27,7 +27,7 @@ public class Main extends Application {
         Scene scene = new Scene(root);
 
         stage.setScene(scene);
-        stage.setTitle("Meow");
+        stage.setTitle("Meow ");
         stage.setMinWidth(400);
         stage.setMinHeight(300);
         stage.show();

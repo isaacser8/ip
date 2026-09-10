@@ -148,7 +148,7 @@ public class Parser {
     public String parseFindKeyword(String input) throws MeowException {
         String keyword = input.substring(5).trim();
         if (keyword.isBlank()) {
-            throw new MeowException("Meow! Please specify a keyword.");
+            throw new MeowException("Meow! I need a keyword to sniff out those tasks.");
         }
         return keyword;
     }

@@ -60,7 +60,7 @@ public class Meow {
                 return ui.getTaskListMessage(tasks);
 
             } else if (input.equals("find")) {
-                throw new MeowException("Meow! Please specify a keyword.");
+                throw new MeowException("Meow! I need a keyword to sniff out those tasks.");
 
             } else if (input.startsWith("find ")) {
                 return findTasks(input);
@@ -69,13 +69,13 @@ public class Meow {
                 return sortTasks();
 
             } else if (input.equals("mark")) {
-                throw new MeowException("Meow! Please specify a task number.");
+                throw new MeowException("Oops, I need a task number for that.");
 
             } else if (input.startsWith("mark ")) {
                 return markTask(input);
 
             } else if (input.equals("unmark")) {
-                throw new MeowException("Meow! Please specify a task number.");
+                throw new MeowException("Oops, I need a task number for that.");
 
             } else if (input.startsWith("unmark ")) {
                 return unmarkTask(input);
@@ -86,7 +86,7 @@ public class Meow {
                 return addTask(input);
 
             } else if (input.equals("delete")) {
-                throw new MeowException("Meow! Please specify a task number.");
+                throw new MeowException("Oops, I need a task number for that.");
 
             } else if (input.startsWith("delete ")) {
                 return deleteTask(input);
@@ -137,13 +137,13 @@ public class Meow {
         try {
             taskNumber = Integer.parseInt(parts[1]);
         } catch (NumberFormatException e) {
-            throw new MeowException("Meow! Task number must be a number.");
+            throw new MeowException("That doesn't look like a task number to me, meow.");
         }
         if (taskNumber <= 0) {
             throw new MeowException("Meow! Task number must be positive.");
         }
         if (taskNumber > tasks.size()) {
-            throw new MeowException("Meow! There is no task number " + taskNumber + ".");
+            throw new MeowException("Meow! I can't find task number " + taskNumber + " in your list.");
         }
 
         return taskNumber - 1;

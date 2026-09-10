@@ -39,7 +39,7 @@ public class Ui {
      * @return the farewell message
      */
     public String getFarewellMessage() {
-        return "Marvellous yap session. Let's catch up soon meow!";
+        return "That's all for now. Stay pawsitive, and I'll catch you later!";
     }
 
     /**
@@ -49,7 +49,7 @@ public class Ui {
      * @return the formatted task list
      */
     public String getTaskListMessage(TaskList taskList) {
-        return formatTaskList("Here are the tasks in your list:", taskList);
+        return formatTaskList("Meow! Here's what you've got on your paws:", taskList);
     }
 
     /**
@@ -60,7 +60,7 @@ public class Ui {
      */
     public String getTaskMarkedMessage(Task task) {
         return formatLines(
-                "Meow! I've marked this task as done:",
+                "Purrfect! This task is done:",
                 task.toString());
     }
 
@@ -72,7 +72,7 @@ public class Ui {
      */
     public String getTaskUnmarkedMessage(Task task) {
         return formatLines(
-                "Meow! I've marked this task as not done yet:",
+                "Meow! Back onto the to-do pile it goes:",
                 task.toString());
     }
 
@@ -85,7 +85,7 @@ public class Ui {
      */
     public String getTaskAddedMessage(Task task, int taskCount) {
         return formatLines(
-                "Meow! I've added this task:",
+                "Got it! I've tucked this task into your list:",
                 task.toString(),
                 "Now you have " + taskCount + " tasks in the list.");
     }
@@ -99,7 +99,7 @@ public class Ui {
      */
     public String getTaskDeletedMessage(Task task, int taskCount) {
         return formatLines(
-                "Meow! I've removed this task:",
+                "Poof! This task is out of your paws:",
                 task.toString(),
                 "Now you have " + taskCount + " tasks in the list.");
     }
@@ -111,7 +111,7 @@ public class Ui {
      * @return the formatted matching task list
      */
     public String getMatchingTasksMessage(TaskList matches) {
-        return formatTaskList("Here are the matching tasks in your list:", matches);
+        return formatTaskList("Found them! These tasks match your search:", matches);
     }
 
     /**
@@ -150,6 +150,6 @@ public class Ui {
      * @return the confirmation message
      */
     public String getTasksSortedMessage() {
-        return "Meow! Tasks have been sorted chronologically.";
+        return "All neat and tidy! Your tasks are sorted chronologically.";
     }
 }

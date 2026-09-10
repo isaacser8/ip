@@ -34,7 +34,7 @@ public class MainWindow {
     public void initialize() {
         dialogContainer.setFillWidth(true);
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
-        addMeowMessage("Hello! What can I do for you? 😼");
+        addMeowMessage("Meow! What are we tackling today? 😼");
     }
 
     /**
