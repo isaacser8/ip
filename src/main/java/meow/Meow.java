@@ -12,6 +12,7 @@ public class Meow {
     private final Parser parser;
     private final Storage storage;
     private TaskList tasks;
+    private boolean lastResponseWasError;
 
     /**
      * Creates a Meow chatbot and loads previously saved tasks.
@@ -52,6 +53,7 @@ public class Meow {
      * @return the chatbot's response
      */
     public String getResponse(String input) {
+        lastResponseWasError = false;
         try {
             if (input.equals("bye")) {
                 return ui.getFarewellMessage();
@@ -108,8 +110,10 @@ public class Meow {
             }
 
         } catch (MeowException e) {
+            lastResponseWasError = true;
             return e.getMessage();
         } catch (IOException e) {
+            lastResponseWasError = true;
             return "Meow! Something went wrong while saving the tasks.";
         }
     }
@@ -243,5 +247,14 @@ public class Meow {
         storage.saveTasks(tasks);
 
         return ui.getTasksSortedMessage();
+    }
+
+    /**
+     * Checks whether the most recent response was caused by an error.
+     *
+     * @return true if the most recent response was an error, false otherwise
+     */
+    public boolean wasLastResponseError() {
+        return lastResponseWasError;
     }
 }

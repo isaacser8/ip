@@ -13,6 +13,14 @@
     -fx-text-fill: white;
 }
 
+.error-bubble {
+    -fx-background-color: #ffd6d6;
+    -fx-text-fill: #8b0000;
+    -fx-background-radius: 14px 14px 14px 2px;
+    -fx-padding: 9px 13px;
+    -fx-font-size: 14px;
+}
+
 .avatar {
     -fx-background-color: white;
     -fx-background-radius: 50%;

@@ -50,7 +50,11 @@ public class MainWindow {
 
         String response = meow.getResponse(input);
         addUserMessage(input);
-        addMeowMessage(response);
+        if (meow.wasLastResponseError()) {
+            addErrorMessage(response);
+        } else {
+            addMeowMessage(response);
+        }
 
         userInput.clear();
 
@@ -91,6 +95,26 @@ public class MainWindow {
         label.setWrapText(true);
         label.setMaxWidth(280);
         label.getStyleClass().add("meow-bubble");
+
+        HBox container = new HBox(8, avatar, label);
+        container.setAlignment(Pos.CENTER_LEFT);
+        container.setPadding(new Insets(5, 50, 5, 10));
+
+        dialogContainer.getChildren().add(container);
+    }
+
+    /**
+     * Adds an error message from Meow to the chat window.
+     *
+     * @param message the error message to display
+     */
+    private void addErrorMessage(String message) {
+        ImageView avatar = createAvatar("/images/meow.png");
+
+        Label label = new Label(message);
+        label.setWrapText(true);
+        label.setMaxWidth(280);
+        label.getStyleClass().add("error-bubble");
 
         HBox container = new HBox(8, avatar, label);
         container.setAlignment(Pos.CENTER_LEFT);
