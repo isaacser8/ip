@@ -38,16 +38,18 @@ public class Storage {
      * @throws IOException if an error occurs while writing to the file
      */
     public void saveTasks(TaskList tasks) throws IOException {
-        Files.createDirectories(filePath.getParent());
+        Path parent = filePath.getParent();
 
-        FileWriter writer = new FileWriter(filePath.toFile());
-
-        for (int i = 0; i < tasks.size(); i++) {
-            writer.write(tasks.getTask(i).toFileString());
-            writer.write(System.lineSeparator());
+        if (parent != null) {
+            Files.createDirectories(parent);
         }
 
-        writer.close();
+        try (FileWriter writer = new FileWriter(filePath.toFile())) {
+            for (int i = 0; i < tasks.size(); i++) {
+                writer.write(tasks.getTask(i).toFileString());
+                writer.write(System.lineSeparator());
+            }
+        }
     }
 
     /**
@@ -64,14 +66,10 @@ public class Storage {
         try (Scanner scanner = new Scanner(filePath.toFile())) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                String[] parts = line.split("\\|");
+                String[] parts = line.split("\\|", -1);
 
-                try {
-                    Task task = parseTask(parts);
-                    taskList.add(task);
-                } catch (DateTimeParseException | ArrayIndexOutOfBoundsException e) {
-                    throw new IOException("Invalid task data found in storage.", e);
-                }
+                Task task = parseTask(parts);
+                taskList.add(task);
             }
         }
         return taskList;
@@ -82,30 +80,87 @@ public class Storage {
      *
      * @param parts the components of a stored task
      * @return the reconstructed task
+     * @throws IOException if the stored task data is invalid
      */
-    private static Task parseTask(String[] parts) {
+    private static Task parseTask(String[] parts) throws IOException {
+        if (parts.length < 3) {
+            throw new IOException("Invalid task data found in storage.");
+        }
+
         String type = parts[0].trim();
         String status = parts[1].trim();
         String description = parts[2].trim();
 
+        validateStatus(status);
+
+        if (description.isBlank()) {
+            throw new IOException("Task description cannot be empty.");
+        }
+
         Task task;
-        if (type.equals(Todo.STORAGE_TYPE)) {
-            task = new Todo(description);
-        } else if (type.equals(Deadline.STORAGE_TYPE)) {
-            String by = parts[3].trim();
-            LocalDate byDate = LocalDate.parse(by);
-            task = new Deadline(description, byDate);
-        } else {
-            String from = parts[3].trim();
-            String to = parts[4].trim();
-            LocalDate fromDate = LocalDate.parse(from);
-            LocalDate toDate = LocalDate.parse(to);
-            task = new Event(description, fromDate, toDate);
+
+        try {
+            if (type.equals(Todo.STORAGE_TYPE)) {
+                validateFieldCount(parts, 3);
+                task = new Todo(description);
+
+            } else if (type.equals(Deadline.STORAGE_TYPE)) {
+                validateFieldCount(parts, 4);
+
+                LocalDate byDate = LocalDate.parse(parts[3].trim());
+                task = new Deadline(description, byDate);
+
+            } else if (type.equals(Event.STORAGE_TYPE)) {
+                validateFieldCount(parts, 5);
+
+                LocalDate fromDate = LocalDate.parse(parts[3].trim());
+                LocalDate toDate = LocalDate.parse(parts[4].trim());
+
+                if (toDate.isBefore(fromDate)) {
+                    throw new IOException(
+                            "Event end date cannot be before its start date.");
+                }
+
+                task = new Event(description, fromDate, toDate);
+
+            } else {
+                throw new IOException("Unknown task type found in storage.");
+            }
+        } catch (DateTimeParseException e) {
+            throw new IOException("Invalid date found in storage.", e);
         }
 
         if (status.equals("1")) {
             task.markAsDone();
         }
+
         return task;
+    }
+
+    /**
+     * Checks that a stored task has the expected number of fields.
+     *
+     * @param parts the stored task components
+     * @param expectedCount the expected number of components
+     * @throws IOException if the field count is incorrect
+     */
+    private static void validateFieldCount(String[] parts, int expectedCount)
+            throws IOException {
+        if (parts.length != expectedCount) {
+            throw new IOException(
+                    "Unexpected number of fields in stored task data.");
+        }
+    }
+
+    /**
+     * Checks that a stored task status is valid.
+     *
+     * @param status the stored completion status
+     * @throws IOException if the status is not 0 or 1
+     */
+    private static void validateStatus(String status) throws IOException {
+        if (!status.equals("0") && !status.equals("1")) {
+            throw new IOException("Invalid task status found in storage.");
+        }
     }
 }

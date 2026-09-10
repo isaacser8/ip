@@ -13,6 +13,7 @@ public class Meow {
     private final Storage storage;
     private TaskList tasks;
     private boolean lastResponseWasError;
+    private String startupErrorMessage;
 
     /**
      * Creates a Meow chatbot and loads previously saved tasks.
@@ -24,7 +25,10 @@ public class Meow {
         try {
             tasks = storage.loadTasks();
         } catch (IOException e) {
-            ui.showError("Meow! Something went wrong while loading the tasks.");
+            startupErrorMessage =
+                    "Meow! I couldn't load your saved tasks because the data file is invalid. "
+                            + "Please fix or remove data/meow.txt and restart Meow.";
+            ui.showError(startupErrorMessage);
             tasks = new TaskList();
         }
     }
@@ -40,7 +44,7 @@ public class Meow {
             String input = scanner.nextLine();
             System.out.println(getResponse(input));
 
-            if (input.equals("bye")) {
+            if (input.strip().equals("bye")) {
                 break;
             }
         }
@@ -53,7 +57,9 @@ public class Meow {
      * @return the chatbot's response
      */
     public String getResponse(String input) {
+        input = input.strip().replaceFirst("\\s+", " ");
         lastResponseWasError = false;
+
         try {
             if (input.equals("bye")) {
                 return ui.getFarewellMessage();
@@ -135,19 +141,33 @@ public class Meow {
      * @throws MeowException if the task number is invalid
      */
     private int getTaskIndex(String input) throws MeowException {
-        String[] parts = input.split(" ");
+        String[] parts = input.trim().split("\\s+");
+
+        if (parts.length < 2) {
+            throw new MeowException("Oops, I need a task number for that.");
+        }
+
+        if (parts.length > 2) {
+            throw new MeowException(
+                    "Meow! Please use the format: " + parts[0] + " TASK_NUMBER.");
+        }
+
         int taskNumber;
 
         try {
             taskNumber = Integer.parseInt(parts[1]);
         } catch (NumberFormatException e) {
-            throw new MeowException("That doesn't look like a task number to me, meow.");
+            throw new MeowException(
+                    "That doesn't look like a task number to me, meow.");
         }
+
         if (taskNumber <= 0) {
             throw new MeowException("Meow! Task number must be positive.");
         }
+
         if (taskNumber > tasks.size()) {
-            throw new MeowException("Meow! I can't find task number " + taskNumber + " in your list.");
+            throw new MeowException(
+                    "Meow! I can't find task number " + taskNumber + " in your list.");
         }
 
         return taskNumber - 1;
@@ -175,8 +195,13 @@ public class Meow {
      * @throws IOException if the updated task list cannot be saved
      */
     private String markTask(String input) throws MeowException, IOException {
+        ensureStorageReady();
         int taskIndex = getTaskIndex(input);
         Task task = tasks.getTask(taskIndex);
+
+        if (task.isDone()) {
+            throw new MeowException("Meow! This task is already marked as done.");
+        }
 
         task.markAsDone();
         storage.saveTasks(tasks);
@@ -193,8 +218,13 @@ public class Meow {
      * @throws IOException if the task list cannot be saved
      */
     private String unmarkTask(String input) throws MeowException, IOException {
+        ensureStorageReady();
         int taskIndex = getTaskIndex(input);
         Task task = tasks.getTask(taskIndex);
+
+        if (!task.isDone()) {
+            throw new MeowException("Meow! This task is already unmarked.");
+        }
 
         task.markAsNotDone();
         storage.saveTasks(tasks);
@@ -211,6 +241,7 @@ public class Meow {
      * @throws IOException if the task list cannot be saved
      */
     private String addTask(String input) throws MeowException, IOException {
+        ensureStorageReady();
         Task task = parser.parseTask(input);
 
         tasks.add(task);
@@ -228,6 +259,7 @@ public class Meow {
      * @throws IOException if the task list cannot be saved
      */
     private String deleteTask(String input) throws MeowException, IOException {
+        ensureStorageReady();
         int taskIndex = getTaskIndex(input);
         Task deletedTask = tasks.delete(taskIndex);
 
@@ -240,9 +272,11 @@ public class Meow {
      * Sorts tasks chronologically and saves the updated order.
      *
      * @return the confirmation message
+     * @throws MeowException if the saved task data could not be loaded
      * @throws IOException if the task list cannot be saved
      */
-    private String sortTasks() throws IOException {
+    private String sortTasks() throws MeowException, IOException {
+        ensureStorageReady();
         tasks.sortChronologically();
         storage.saveTasks(tasks);
 
@@ -256,5 +290,27 @@ public class Meow {
      */
     public boolean wasLastResponseError() {
         return lastResponseWasError;
+    }
+
+    /**
+     * Returns the error encountered while loading saved tasks.
+     *
+     * @return the startup error message, or null if loading succeeded
+     */
+    public String getStartupErrorMessage() {
+        return startupErrorMessage;
+    }
+
+    /**
+     * Ensures that task data was loaded successfully before allowing modifications.
+     *
+     * @throws MeowException if the saved task data could not be loaded
+     */
+    private void ensureStorageReady() throws MeowException {
+        if (startupErrorMessage != null) {
+            throw new MeowException(
+                    "Meow! I can't modify tasks while the saved data file is invalid. "
+                            + "Please fix or remove data/meow.txt and restart Meow.");
+        }
     }
 }

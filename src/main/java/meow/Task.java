@@ -66,4 +66,13 @@ public class Task {
     public String toFileString() {
         return "";
     }
+
+    /**
+     * Returns whether the task has been completed.
+     *
+     * @return true if the task is completed, false otherwise
+     */
+    public boolean isDone() {
+        return isDone;
+    }
 }

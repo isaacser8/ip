@@ -1,5 +1,6 @@
 package meow;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -11,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 /**
  * Controls the main application window.
@@ -35,6 +37,11 @@ public class MainWindow {
         dialogContainer.setFillWidth(true);
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
         addMeowMessage("Meow! What are we tackling today? 😼");
+        String startupError = meow.getStartupErrorMessage();
+
+        if (startupError != null) {
+            addErrorMessage(startupError);
+        }
     }
 
     /**
@@ -42,7 +49,7 @@ public class MainWindow {
      */
     @FXML
     private void handleUserInput() {
-        String input = userInput.getText();
+        String input = userInput.getText().strip();
 
         if (input.isBlank()) {
             return;
@@ -59,7 +66,9 @@ public class MainWindow {
         userInput.clear();
 
         if (input.equals("bye")) {
-            Platform.exit();
+            PauseTransition delay = new PauseTransition(Duration.seconds(1.2));
+            delay.setOnFinished(event -> Platform.exit());
+            delay.play();
         }
     }
 

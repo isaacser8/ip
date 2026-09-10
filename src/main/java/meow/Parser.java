@@ -2,6 +2,8 @@ package meow;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Parses user commands and converts them into tasks.
@@ -17,10 +19,13 @@ public class Parser {
      */
     private Task parseTodo(String input) throws MeowException {
         assert input.startsWith("todo ") : "parseTodo expects a todo command";
-        String content = input.substring(5);
+        String content = input.substring(5).trim();
+
         if (content.isBlank()) {
             throw new MeowException("Meow! A todo needs a description.");
         }
+        validateDescription(content);
+
         return new Todo(content);
     }
 
@@ -38,17 +43,18 @@ public class Parser {
             throw new MeowException("Meow! A deadline needs a description and a /by date.");
         }
 
-        int byIndex = content.indexOf("/by");
+        int byIndex = getUniqueParameterIndex(content, "/by");
         if (byIndex == -1) {
             throw new MeowException("Meow! A deadline needs a /by date.");
         }
 
         String description = content.substring(0, byIndex).trim();
-        String by = content.substring(byIndex + 3).trim();
+        String by = content.substring(byIndex + "/by".length()).trim();
 
         if (description.isBlank()) {
             throw new MeowException("Meow! A deadline needs a description.");
         }
+        validateDescription(description);
         if (by.isBlank()) {
             throw new MeowException("Meow! A deadline needs a /by date.");
         }
@@ -77,21 +83,28 @@ public class Parser {
             throw new MeowException("Meow! An event needs a description, a /from date and a /to date.");
         }
 
-        int fromIndex = content.indexOf("/from");
-        int toIndex = content.indexOf("/to");
+        int fromIndex = getUniqueParameterIndex(content, "/from");
+        int toIndex = getUniqueParameterIndex(content, "/to");
         if (fromIndex == -1) {
             throw new MeowException("Meow! An event needs a /from date.");
         }
         if (toIndex == -1) {
             throw new MeowException("Meow! An event needs a /to date.");
         }
+        if (toIndex < fromIndex) {
+            throw new MeowException(
+                    "Meow! Please place /from before /to.");
+        }
 
         String description = content.substring(0, fromIndex).trim();
-        String from = content.substring(fromIndex + 5, toIndex).trim();
-        String to = content.substring(toIndex + 3).trim();
+        String from = content.substring(
+                fromIndex + "/from".length(), toIndex).trim();
+        String to = content.substring(
+                toIndex + "/to".length()).trim();
         if (description.isBlank()) {
             throw new MeowException("Meow! An event needs a description.");
         }
+        validateDescription(description);
         if (from.isBlank()) {
             throw new MeowException("Meow! An event needs a /from date.");
         }
@@ -151,5 +164,46 @@ public class Parser {
             throw new MeowException("Meow! I need a keyword to sniff out those tasks.");
         }
         return keyword;
+    }
+
+    /**
+     * Finds the index of a parameter that appears exactly once as a separate token.
+     *
+     * @param content the command content to search
+     * @param parameter the parameter to find
+     * @return the index of the parameter, or -1 if it is not present
+     * @throws MeowException if the parameter appears more than once
+     */
+    private int getUniqueParameterIndex(String content, String parameter)
+            throws MeowException {
+        Pattern pattern = Pattern.compile(
+                "(?<!\\S)" + Pattern.quote(parameter) + "(?!\\S)");
+        Matcher matcher = pattern.matcher(content);
+
+        if (!matcher.find()) {
+            return -1;
+        }
+
+        int parameterIndex = matcher.start();
+
+        if (matcher.find()) {
+            throw new MeowException(
+                    "Meow! Please specify " + parameter + " only once.");
+        }
+
+        return parameterIndex;
+    }
+
+    /**
+     * Checks that a task description does not contain reserved characters.
+     *
+     * @param description the task description to validate
+     * @throws MeowException if the description contains a reserved character
+     */
+    private void validateDescription(String description) throws MeowException {
+        if (description.contains("|")) {
+            throw new MeowException(
+                    "Meow! Task descriptions cannot contain the '|' character.");
+        }
     }
 }
