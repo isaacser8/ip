@@ -59,12 +59,9 @@ public class Parser {
             throw new MeowException("Meow! A deadline needs a /by date.");
         }
 
-        LocalDate byDate;
-        try {
-            byDate = LocalDate.parse(by);
-        } catch (DateTimeParseException e) {
-            throw new MeowException("Meow! Please enter the date in yyyy-MM-dd format.");
-        }
+        LocalDate byDate = parseDate(
+                by,
+                "Meow! Please enter the date in yyyy-MM-dd format.");
 
         return new Deadline(description, byDate);
     }
@@ -77,10 +74,13 @@ public class Parser {
      * @throws MeowException if the command is invalid
      */
     private Task parseEvent(String input) throws MeowException {
-        assert input.startsWith("event ") : "parseEvent expects an event command";
+        assert input.startsWith("event ")
+                : "parseEvent expects an event command";
+
         String content = input.substring(6).trim();
         if (content.isBlank()) {
-            throw new MeowException("Meow! An event needs a description, a /from date and a /to date.");
+            throw new MeowException(
+                    "Meow! An event needs a description, a /from date and a /to date.");
         }
 
         int fromIndex = getUniqueParameterIndex(content, "/from");
@@ -101,6 +101,7 @@ public class Parser {
                 fromIndex + "/from".length(), toIndex).trim();
         String to = content.substring(
                 toIndex + "/to".length()).trim();
+
         if (description.isBlank()) {
             throw new MeowException("Meow! An event needs a description.");
         }
@@ -112,23 +113,31 @@ public class Parser {
             throw new MeowException("Meow! An event needs a /to date.");
         }
 
-        LocalDate fromDate;
-        LocalDate toDate;
+        LocalDate fromDate = parseDate(
+                from,
+                "Meow! Please enter event dates in yyyy-MM-dd format.");
+        LocalDate toDate = parseDate(
+                to,
+                "Meow! Please enter event dates in yyyy-MM-dd format.");
 
-        try {
-            fromDate = LocalDate.parse(from);
-            toDate = LocalDate.parse(to);
-        } catch (DateTimeParseException e) {
-            throw new MeowException(
-                    "Meow! Please enter event dates in yyyy-MM-dd format.");
-        }
+        validateEventDateOrder(fromDate, toDate);
 
+        return new Event(description, fromDate, toDate);
+    }
+
+    /**
+     * Checks that an event does not end before it starts.
+     *
+     * @param fromDate the event start date
+     * @param toDate the event end date
+     * @throws MeowException if the end date is before the start date
+     */
+    private void validateEventDateOrder(LocalDate fromDate, LocalDate toDate)
+            throws MeowException {
         if (toDate.isBefore(fromDate)) {
             throw new MeowException(
                     "Meow! An event cannot end before it starts.");
         }
-
-        return new Event(description, fromDate, toDate);
     }
 
     /**
@@ -159,11 +168,14 @@ public class Parser {
      * @throws MeowException if no keyword is provided.
      */
     public String parseFindKeyword(String input) throws MeowException {
-        String keyword = input.substring(5).trim();
-        if (keyword.isBlank()) {
-            throw new MeowException("Meow! I need a keyword to sniff out those tasks.");
+        String[] parts = input.split("\\s+", 2);
+
+        if (parts.length < 2 || parts[1].isBlank()) {
+            throw new MeowException(
+                    "Meow! I need a keyword to sniff out those tasks.");
         }
-        return keyword;
+
+        return parts[1].trim();
     }
 
     /**
@@ -204,6 +216,23 @@ public class Parser {
         if (description.contains("|")) {
             throw new MeowException(
                     "Meow! Task descriptions cannot contain the '|' character.");
+        }
+    }
+
+    /**
+     * Parses a date from the given text.
+     *
+     * @param date the date text to parse
+     * @param errorMessage the message to show if parsing fails
+     * @return the parsed date
+     * @throws MeowException if the date is invalid
+     */
+    private LocalDate parseDate(String date, String errorMessage)
+            throws MeowException {
+        try {
+            return LocalDate.parse(date);
+        } catch (DateTimeParseException e) {
+            throw new MeowException(errorMessage);
         }
     }
 }

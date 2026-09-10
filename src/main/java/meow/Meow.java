@@ -57,64 +57,11 @@ public class Meow {
      * @return the chatbot's response
      */
     public String getResponse(String input) {
-        input = input.strip().replaceFirst("\\s+", " ");
+        String normalizedInput = normalizeInput(input);
         lastResponseWasError = false;
 
         try {
-            if (input.equals("bye")) {
-                return ui.getFarewellMessage();
-
-            } else if (input.equals("list")) {
-                return ui.getTaskListMessage(tasks);
-
-            } else if (input.equals("find")) {
-                throw new MeowException("Meow! I need a keyword to sniff out those tasks.");
-
-            } else if (input.startsWith("find ")) {
-                return findTasks(input);
-
-            } else if (input.equals("sort")) {
-                return sortTasks();
-
-            } else if (input.equals("mark")) {
-                throw new MeowException("Oops, I need a task number for that.");
-
-            } else if (input.startsWith("mark ")) {
-                return markTask(input);
-
-            } else if (input.equals("unmark")) {
-                throw new MeowException("Oops, I need a task number for that.");
-
-            } else if (input.startsWith("unmark ")) {
-                return unmarkTask(input);
-
-            } else if (input.startsWith("todo ")
-                    || input.startsWith("deadline ")
-                    || input.startsWith("event ")) {
-                return addTask(input);
-
-            } else if (input.equals("delete")) {
-                throw new MeowException("Oops, I need a task number for that.");
-
-            } else if (input.startsWith("delete ")) {
-                return deleteTask(input);
-
-            } else if (input.equals("todo")) {
-                throw new MeowException("Meow! A todo needs a description.");
-
-            } else if (input.equals("deadline")) {
-                throw new MeowException(
-                        "Meow! A deadline needs a description and a /by date.");
-
-            } else if (input.equals("event")) {
-                throw new MeowException(
-                        "Meow! An event needs a description, a /from date and a /to date.");
-
-            } else {
-                throw new MeowException(
-                        "Meow! I'm sorry, but I don't know what that means.");
-            }
-
+            return executeCommand(normalizedInput);
         } catch (MeowException e) {
             lastResponseWasError = true;
             return e.getMessage();
@@ -311,6 +258,84 @@ public class Meow {
             throw new MeowException(
                     "Meow! I can't modify tasks while the saved data file is invalid. "
                             + "Please fix or remove data/meow.txt and restart Meow.");
+        }
+    }
+
+    /**
+     * Normalizes whitespace surrounding the user command.
+     *
+     * @param input the raw user input
+     * @return the normalized input
+     */
+    private String normalizeInput(String input) {
+        return input.strip().replaceFirst("\\s+", " ");
+    }
+
+    /**
+     * Executes the command represented by the given user input.
+     *
+     * @param input the normalized user input
+     * @return the response produced by the command
+     * @throws MeowException if the command or its arguments are invalid
+     * @throws IOException if task data cannot be saved
+     */
+    private String executeCommand(String input) throws MeowException, IOException {
+        String command = input.split(" ", 2)[0];
+
+        return switch (command) {
+            case "bye" -> {
+                ensureNoArguments(input, "bye");
+                yield ui.getFarewellMessage();
+            }
+            case "list" -> {
+                ensureNoArguments(input, "list");
+                yield ui.getTaskListMessage(tasks);
+            }
+            case "find" -> findTasks(input);
+            case "sort" -> {
+                ensureNoArguments(input, "sort");
+                yield sortTasks();
+            }
+            case "mark" -> markTask(input);
+            case "unmark" -> unmarkTask(input);
+            case "delete" -> deleteTask(input);
+            case "todo" -> {
+                if (input.equals("todo")) {
+                    throw new MeowException("Meow! A todo needs a description.");
+                }
+                yield addTask(input);
+            }
+            case "deadline" -> {
+                if (input.equals("deadline")) {
+                    throw new MeowException(
+                            "Meow! A deadline needs a description and a /by date.");
+                }
+                yield addTask(input);
+            }
+            case "event" -> {
+                if (input.equals("event")) {
+                    throw new MeowException(
+                            "Meow! An event needs a description, a /from date and a /to date.");
+                }
+                yield addTask(input);
+            }
+            default -> throw new MeowException(
+                    "Meow! I'm sorry, but I don't know what that means.");
+        };
+    }
+
+    /**
+     * Checks that a command does not contain unexpected arguments.
+     *
+     * @param input the full user input
+     * @param command the command being checked
+     * @throws MeowException if extra arguments are present
+     */
+    private void ensureNoArguments(String input, String command)
+            throws MeowException {
+        if (!input.equals(command)) {
+            throw new MeowException(
+                    "Meow! The " + command + " command does not take any arguments.");
         }
     }
 }
