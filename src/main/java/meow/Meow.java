@@ -12,7 +12,7 @@ public class Meow {
     private final Parser parser;
     private final Storage storage;
     private TaskList tasks;
-    private boolean lastResponseWasError;
+    private boolean isLastResponseError;
     private String startupErrorMessage;
 
     /**
@@ -58,15 +58,15 @@ public class Meow {
      */
     public String getResponse(String input) {
         String normalizedInput = normalizeInput(input);
-        lastResponseWasError = false;
+        isLastResponseError = false;
 
         try {
             return executeCommand(normalizedInput);
         } catch (MeowException e) {
-            lastResponseWasError = true;
+            isLastResponseError = true;
             return e.getMessage();
         } catch (IOException e) {
-            lastResponseWasError = true;
+            isLastResponseError = true;
             return "Meow! Something went wrong while saving the tasks.";
         }
     }
@@ -235,8 +235,8 @@ public class Meow {
      *
      * @return true if the most recent response was an error, false otherwise
      */
-    public boolean wasLastResponseError() {
-        return lastResponseWasError;
+    public boolean isLastResponseError() {
+        return isLastResponseError;
     }
 
     /**

@@ -57,7 +57,7 @@ public class MainWindow {
 
         String response = meow.getResponse(input);
         addUserMessage(input);
-        if (meow.wasLastResponseError()) {
+        if (meow.isLastResponseError()) {
             addErrorMessage(response);
         } else {
             addMeowMessage(response);
