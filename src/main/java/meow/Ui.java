@@ -44,12 +44,19 @@ public class Ui {
 
     /**
      * Returns the task list as a formatted message.
+     * If the task list is empty, returns a message indicating that there are no tasks.
      *
      * @param taskList the task list to display
-     * @return the formatted task list
+     * @return the formatted task list, or an empty-list message if there are no tasks
      */
     public String getTaskListMessage(TaskList taskList) {
-        return formatTaskList("Meow! Here's what you've got on your paws:", taskList);
+        if (taskList.size() == 0) {
+            return "Meow! Your task list is empty. Time to add something 😼";
+        }
+
+        return formatTaskList(
+                "Meow! Here's what you've got on your paws:",
+                taskList);
     }
 
     /**
@@ -106,12 +113,19 @@ public class Ui {
 
     /**
      * Returns matching tasks as a formatted message.
+     * If there are no matching tasks, returns a message indicating that no matches were found.
      *
      * @param matches the matching tasks
-     * @return the formatted matching task list
+     * @return the formatted matching task list, or a no-matches message if no tasks match
      */
     public String getMatchingTasksMessage(TaskList matches) {
-        return formatTaskList("Found them! These tasks match your search:", matches);
+        if (matches.size() == 0) {
+            return "Meow! I couldn't find any tasks matching that search.";
+        }
+
+        return formatTaskList(
+                "Found them! These tasks match your search:",
+                matches);
     }
 
     /**
