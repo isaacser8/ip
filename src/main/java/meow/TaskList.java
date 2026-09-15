@@ -109,4 +109,16 @@ public class TaskList {
 
         return null;
     }
+
+    /**
+     * Creates a copy of this task list while preserving the current task order.
+     * The task objects themselves are shared between the two lists.
+     *
+     * @return a copy of this task list
+     */
+    public TaskList copy() {
+        TaskList copy = new TaskList();
+        copy.tasks.addAll(tasks);
+        return copy;
+    }
 }

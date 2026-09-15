@@ -151,7 +151,13 @@ public class Meow {
         }
 
         task.markAsDone();
-        storage.saveTasks(tasks);
+
+        try {
+            storage.saveTasks(tasks);
+        } catch (IOException e) {
+            task.markAsNotDone();
+            throw e;
+        }
 
         return ui.getTaskMarkedMessage(task);
     }
@@ -174,7 +180,13 @@ public class Meow {
         }
 
         task.markAsNotDone();
-        storage.saveTasks(tasks);
+
+        try {
+            storage.saveTasks(tasks);
+        } catch (IOException e) {
+            task.markAsDone();
+            throw e;
+        }
 
         return ui.getTaskUnmarkedMessage(task);
     }
@@ -190,9 +202,10 @@ public class Meow {
     private String addTask(String input) throws MeowException, IOException {
         ensureStorageReady();
         Task task = parser.parseTask(input);
+        TaskList previousTasks = tasks.copy();
 
         tasks.add(task);
-        storage.saveTasks(tasks);
+        saveOrRestore(previousTasks);
 
         return ui.getTaskAddedMessage(task, tasks.size());
     }
@@ -208,9 +221,10 @@ public class Meow {
     private String deleteTask(String input) throws MeowException, IOException {
         ensureStorageReady();
         int taskIndex = getTaskIndex(input);
-        Task deletedTask = tasks.delete(taskIndex);
+        TaskList previousTasks = tasks.copy();
 
-        storage.saveTasks(tasks);
+        Task deletedTask = tasks.delete(taskIndex);
+        saveOrRestore(previousTasks);
 
         return ui.getTaskDeletedMessage(deletedTask, tasks.size());
     }
@@ -224,8 +238,10 @@ public class Meow {
      */
     private String sortTasks() throws MeowException, IOException {
         ensureStorageReady();
+        TaskList previousTasks = tasks.copy();
+
         tasks.sortChronologically();
-        storage.saveTasks(tasks);
+        saveOrRestore(previousTasks);
 
         return ui.getTasksSortedMessage();
     }
@@ -336,6 +352,21 @@ public class Meow {
         if (!input.equals(command)) {
             throw new MeowException(
                     "Meow! The " + command + " command does not take any arguments.");
+        }
+    }
+
+    /**
+     * Saves the current task list and restores the previous task list if saving fails.
+     *
+     * @param previousTasks the task list before the modification
+     * @throws IOException if the task list cannot be saved
+     */
+    private void saveOrRestore(TaskList previousTasks) throws IOException {
+        try {
+            storage.saveTasks(tasks);
+        } catch (IOException e) {
+            tasks = previousTasks;
+            throw e;
         }
     }
 }
