@@ -61,7 +61,7 @@ public class Parser {
 
         LocalDate dueDate = parseDate(
                 by,
-                "Meow! Please enter the date in yyyy-MM-dd format.");
+                "Meow! Please enter a valid date in yyyy-MM-dd format.");
 
         return new Deadline(description, dueDate);
     }
@@ -114,7 +114,7 @@ public class Parser {
         }
 
         String dateErrorMessage =
-                "Meow! Please enter event dates in yyyy-MM-dd format.";
+                "Meow! Please enter valid event dates in yyyy-MM-dd format.";
 
         LocalDate fromDate = parseDate(from, dateErrorMessage);
         LocalDate toDate = parseDate(to, dateErrorMessage);
