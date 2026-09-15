@@ -1,6 +1,17 @@
 # Meow User Guide
 
-Meow is a task-management chatbot that helps you keep track of todos, deadlines, and events through simple text commands.
+Meow is a task-management chatbot 😼 that helps you keep track of
+todos, deadlines, and events through simple text commands.
+
+![Meow GUI](Ui.png)
+
+## Quick Start
+
+1. Download `meow.jar` from the latest GitHub release.
+2. Ensure Java 25 is installed.
+3. Open a terminal in the folder containing `meow.jar`.
+4. Run: `java -jar meow.jar`
+5. Start managing your tasks!
 
 ## Adding a todo
 
@@ -43,6 +54,7 @@ The end date cannot be earlier than the start date.
 ## Listing tasks
 
 Displays all tasks currently stored in Meow.
+If the task list is empty, Meow will let you know that there are no tasks yet.
 
 Format:
 `list`
@@ -93,6 +105,7 @@ Example:
 ## Finding tasks
 
 Finds tasks whose descriptions contain the specified keyword.
+If no tasks match the keyword, Meow will let you know that no matching tasks were found.
 
 Format:
 `find KEYWORD`
