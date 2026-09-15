@@ -83,11 +83,29 @@ public class Storage {
      * @throws IOException if the stored task data is invalid
      */
     private static Task parseTask(String[] parts) throws IOException {
+        validateBasicTaskData(parts);
+
+        String type = parts[0].trim();
+        String status = parts[1].trim();
+        String description = parts[2].trim();
+
+        Task task = createTask(type, description, parts);
+        restoreTaskStatus(task, status);
+
+        return task;
+    }
+
+    /**
+     * Validates the common fields shared by all stored tasks.
+     *
+     * @param parts the stored task components
+     * @throws IOException if the common task data is invalid
+     */
+    private static void validateBasicTaskData(String[] parts) throws IOException {
         if (parts.length < 3) {
             throw new IOException("Invalid task data found in storage.");
         }
 
-        String type = parts[0].trim();
         String status = parts[1].trim();
         String description = parts[2].trim();
 
@@ -96,45 +114,86 @@ public class Storage {
         if (description.isBlank()) {
             throw new IOException("Task description cannot be empty.");
         }
+    }
 
-        Task task;
+    /**
+     * Creates the appropriate task type from stored task components.
+     *
+     * @param type the stored task type
+     * @param description the task description
+     * @param parts the stored task components
+     * @return the reconstructed task
+     * @throws IOException if the stored task data is invalid
+     */
+    private static Task createTask(String type, String description, String[] parts)
+            throws IOException {
 
-        try {
-            if (type.equals(Todo.STORAGE_TYPE)) {
+        switch (type) {
+            case Todo.STORAGE_TYPE -> {
                 validateFieldCount(parts, 3);
-                task = new Todo(description);
-
-            } else if (type.equals(Deadline.STORAGE_TYPE)) {
+                return new Todo(description);
+            }
+            case Deadline.STORAGE_TYPE -> {
                 validateFieldCount(parts, 4);
 
-                LocalDate byDate = LocalDate.parse(parts[3].trim());
-                task = new Deadline(description, byDate);
-
-            } else if (type.equals(Event.STORAGE_TYPE)) {
+                LocalDate dueDate = parseStoredDate(parts[3]);
+                return new Deadline(description, dueDate);
+            }
+            case Event.STORAGE_TYPE -> {
                 validateFieldCount(parts, 5);
 
-                LocalDate fromDate = LocalDate.parse(parts[3].trim());
-                LocalDate toDate = LocalDate.parse(parts[4].trim());
+                LocalDate fromDate = parseStoredDate(parts[3]);
+                LocalDate toDate = parseStoredDate(parts[4]);
 
-                if (toDate.isBefore(fromDate)) {
-                    throw new IOException(
-                            "Event end date cannot be before its start date.");
-                }
+                validateEventDates(fromDate, toDate);
 
-                task = new Event(description, fromDate, toDate);
-
-            } else {
-                throw new IOException("Unknown task type found in storage.");
+                return new Event(description, fromDate, toDate);
             }
+            default -> throw new IOException("Unknown task type found in storage.");
+        }
+    }
+
+    /**
+     * Parses a date stored in the task data file.
+     *
+     * @param value the stored date value
+     * @return the parsed date
+     * @throws IOException if the stored date is invalid
+     */
+    private static LocalDate parseStoredDate(String value) throws IOException {
+        try {
+            return LocalDate.parse(value.trim());
         } catch (DateTimeParseException e) {
             throw new IOException("Invalid date found in storage.", e);
         }
+    }
 
+    /**
+     * Validates the chronological order of an event's dates.
+     *
+     * @param fromDate the event start date
+     * @param toDate the event end date
+     * @throws IOException if the event ends before it starts
+     */
+    private static void validateEventDates(LocalDate fromDate, LocalDate toDate)
+            throws IOException {
+
+        if (toDate.isBefore(fromDate)) {
+            throw new IOException(
+                    "Event end date cannot be before its start date.");
+        }
+    }
+
+    /**
+     * Restores the saved completion status of a task.
+     *
+     * @param task the reconstructed task
+     * @param status the stored completion status
+     */
+    private static void restoreTaskStatus(Task task, String status) {
         if (status.equals("1")) {
             task.markAsDone();
         }
-
-        return task;
     }
 
     /**
