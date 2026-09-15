@@ -125,21 +125,6 @@ public class Parser {
     }
 
     /**
-     * Checks that an event does not end before it starts.
-     *
-     * @param fromDate the event start date
-     * @param toDate the event end date
-     * @throws MeowException if the end date is before the start date
-     */
-    private void validateEventDateOrder(LocalDate fromDate, LocalDate toDate)
-            throws MeowException {
-        if (toDate.isBefore(fromDate)) {
-            throw new MeowException(
-                    "Meow! An event cannot end before it starts.");
-        }
-    }
-
-    /**
      * Parses a user command into the corresponding task.
      *
      * @param input the full user command

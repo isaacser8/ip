@@ -13,33 +13,29 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="meow.MainWindow">
 
-    <children>
-        <ScrollPane fx:id="scrollPane"
-                    fitToWidth="true"
-                    AnchorPane.topAnchor="0.0"
-                    AnchorPane.bottomAnchor="50.0"
-                    AnchorPane.leftAnchor="0.0"
-                    AnchorPane.rightAnchor="0.0">
-            <content>
-                <VBox fx:id="dialogContainer"
-                      spacing="8.0"
-                      styleClass="dialog-container"
-                      prefWidth="380.0"/>
-            </content>
-        </ScrollPane>
+    <ScrollPane fx:id="scrollPane"
+                fitToWidth="true"
+                AnchorPane.topAnchor="0.0"
+                AnchorPane.bottomAnchor="50.0"
+                AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0">
+        <VBox fx:id="dialogContainer"
+              spacing="8.0"
+              styleClass="dialog-container"
+              prefWidth="380.0"/>
+    </ScrollPane>
 
-        <TextField fx:id="userInput"
-                   promptText="Type a command..."
-                   styleClass="input-field"
-                   onAction="#handleUserInput"
-                   AnchorPane.bottomAnchor="8.0"
-                   AnchorPane.leftAnchor="8.0"
-                   AnchorPane.rightAnchor="90.0"/>
+    <TextField fx:id="userInput"
+               promptText="Type a command..."
+               styleClass="input-field"
+               onAction="#handleUserInput"
+               AnchorPane.bottomAnchor="8.0"
+               AnchorPane.leftAnchor="8.0"
+               AnchorPane.rightAnchor="90.0"/>
 
-        <Button text="Send"
-                styleClass="send-button"
-                onAction="#handleUserInput"
-                AnchorPane.bottomAnchor="8.0"
-                AnchorPane.rightAnchor="8.0"/>
-    </children>
+    <Button text="Send"
+            styleClass="send-button"
+            onAction="#handleUserInput"
+            AnchorPane.bottomAnchor="8.0"
+            AnchorPane.rightAnchor="8.0"/>
 </AnchorPane>
