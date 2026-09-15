@@ -59,11 +59,11 @@ public class Parser {
             throw new MeowException("Meow! A deadline needs a /by date.");
         }
 
-        LocalDate byDate = parseDate(
+        LocalDate dueDate = parseDate(
                 by,
                 "Meow! Please enter the date in yyyy-MM-dd format.");
 
-        return new Deadline(description, byDate);
+        return new Deadline(description, dueDate);
     }
 
     /**
@@ -113,14 +113,13 @@ public class Parser {
             throw new MeowException("Meow! An event needs a /to date.");
         }
 
-        LocalDate fromDate = parseDate(
-                from,
-                "Meow! Please enter event dates in yyyy-MM-dd format.");
-        LocalDate toDate = parseDate(
-                to,
-                "Meow! Please enter event dates in yyyy-MM-dd format.");
+        String dateErrorMessage =
+                "Meow! Please enter event dates in yyyy-MM-dd format.";
 
-        validateEventDateOrder(fromDate, toDate);
+        LocalDate fromDate = parseDate(from, dateErrorMessage);
+        LocalDate toDate = parseDate(to, dateErrorMessage);
+
+        validateEventDates(fromDate, toDate);
 
         return new Event(description, fromDate, toDate);
     }
@@ -233,6 +232,21 @@ public class Parser {
             return LocalDate.parse(date);
         } catch (DateTimeParseException e) {
             throw new MeowException(errorMessage);
+        }
+    }
+
+    /**
+     * Checks that an event does not end before it starts.
+     *
+     * @param fromDate the event start date
+     * @param toDate the event end date
+     * @throws MeowException if the event ends before it starts
+     */
+    private void validateEventDates(LocalDate fromDate, LocalDate toDate)
+            throws MeowException {
+        if (toDate.isBefore(fromDate)) {
+            throw new MeowException(
+                    "Meow! An event cannot end before it starts.");
         }
     }
 }
