@@ -62,7 +62,7 @@ Format:
 Example output:
 
 ```
-Here are the tasks in your list:
+Meow! Here's what you've got on your paws:
 1. [T][ ] read book
 2. [D][ ] submit assignment (by: Sep 10 2026)
 3. [E][ ] project meeting (from: Sep 08 2026 to: Sep 09 2026)
@@ -147,7 +147,7 @@ the task order becomes:
 ```
 Meow confirms the operation with: 
 
-`Meow! Tasks have been sorted chronologically.`
+`All neat and tidy! Your tasks are sorted chronologically.`
    
 The sorted order is saved and remains after restarting the application.
 
